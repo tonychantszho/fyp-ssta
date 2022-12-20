@@ -1,0 +1,7 @@
+{
+  "name": "SSTA",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}
