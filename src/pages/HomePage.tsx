@@ -14,7 +14,7 @@ const HomePage: React.FC = () => {
 
     return (
         <IonPage>
-            <div className="font-bold text-white bg-black"> 34000 </div>
+            <div className="font-bold text-white bg-black"> 34000s </div>
             <div style={{
                 position: "relative",
                 height: "100%",
