@@ -92,7 +92,7 @@ const PurchaseRecord: React.FC = () => {
                     <p>{content[index].price}</p>
                 </IonItem>
                 <IonItemOptions side="start">
-                    <IonItemOption color='danger' onClick={() => removeContent(id, index)}>Delete</IonItemOption>
+                    <IonItemOption color='danger' onClick={() => removeContent(1, index)}>Delete</IonItemOption>
                 </IonItemOptions>
                 <IonItemOptions side="end">
                     <IonItemOption
@@ -138,7 +138,7 @@ const PurchaseRecord: React.FC = () => {
         setCurrentItem([{ description: '', price: 0.1 }]);
     };
 
-    const updateList = async (id: string, index: number) => {
+    const updateList = async (id: number, index: number) => {
         ionList.current.closeSlidingItems();
         await deleteContent(id, index);
         //setCurrentList('update');
@@ -149,7 +149,7 @@ const PurchaseRecord: React.FC = () => {
         ionList.current.closeSlidingItems();
     }
 
-    const removeContent = async (id: string, index: number) => {
+    const removeContent = async (id: number, index: number) => {
         ionList.current.closeSlidingItems();
         await deleteContent(id, index);
         //setCurrentList('update');

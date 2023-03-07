@@ -30,8 +30,8 @@ const ScanReceipt: React.FC = () => {
         await worker.loadLanguage('chi_tra');
         await worker.initialize('chi_tra');
         //@ts-ignore
-        // const { data } = await worker.recognize(Capacitor.convertFileSrc(src));
-        const { data } = await worker.recognize("https://i.imgur.com/khqahfd.jpeg");
+        const { data } = await worker.recognize(Capacitor.convertFileSrc(src));
+        //const { data } = await worker.recognize("https://i.imgur.com/khqahfd.jpeg");
         console.log(data.lines);
         await worker.terminate();
         const contentsss: PurchaseItem[] = [];

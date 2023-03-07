@@ -1,22 +1,16 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Drivers, Storage } from "@ionic/storage";
 import * as CordovaSQLiteDriver from "localforage-cordovasqlitedriver";
 import _ from 'lodash';
+import { PurchaseList } from "../typings/Interface";
+import StorageContext from "../contexts/StorageContext";
 
 const RECORD_KEY = 'purchase-records';
-
-export interface PurchaseList {
-    id: string;
-    date: string;
-    type: string;
-    content: { description: string, price: number }[];
-    total: number;
-}
 
 export function useStorage() {
     const [store, setStore] = useState<Storage>();
     const [list, setList] = useState<PurchaseList[]>([]);
-
+    const storageContext = useContext(StorageContext);
     useEffect(() => {
         const initStorage = async () => {
             const storage = new Storage({
@@ -30,33 +24,33 @@ export function useStorage() {
 
             const storedRecords = await store.get(RECORD_KEY) || [];
             setList(storedRecords);
+            storageContext.dispatch({ type: 'setList', payload: storedRecords });
         }
         initStorage();
     }, []);
 
     const createPurchaseList = async (content: { description: string, price: number }[]) => {
         const newList = {
-            id: "" + list.length,
-            date: new Date().toISOString(),
+            id: new Date().toISOString(),
             type: 'eat',
             content: content,
             total: _.sumBy(content, (o) => o.price)
         }
         const updatedList = [...list, newList];
         setList(updatedList);
-        console.log(updatedList);
+        storageContext.dispatch({ type: 'setList', payload: updatedList });
         store?.set(RECORD_KEY, updatedList);
     }
 
-    const deleteContent = async (id: string, index: number) => {
+    const deleteContent = async (id: number, index: number) => {
         let newList = [...list];
         newList[Number(id)].content.splice(index, 1);
         newList[Number(id)].total = _.sumBy(newList[Number(id)].content, (o) => o.price);
         if (newList[Number(id)].total === 0) {
             newList.splice(Number(id), 1);
         }
-        console.log(newList);
         setList(newList);
+        storageContext.dispatch({ type: 'setList', payload: newList });
         store?.set(RECORD_KEY, newList);
     }
 
@@ -65,6 +59,7 @@ export function useStorage() {
         newList[Number(tar.id)].content[tar.index] = content;
         newList[Number(tar.id)].total = _.sumBy(newList[Number(tar.id)].content, (o) => o.price);
         setList(newList);
+        storageContext.dispatch({ type: 'setList', payload: newList });
         store?.set(RECORD_KEY, newList);
     }
 

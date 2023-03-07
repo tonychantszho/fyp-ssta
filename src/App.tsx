@@ -29,10 +29,13 @@ import '@ionic/react/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
 import './theme/tailwind.css';
+import { useState } from 'react';
+import { useStorage } from './hooks/useSorage';
 
 setupIonicReact();
 
 const App: React.FC = () => {
+  const [totalAmount, setTotalAmount] = useState(10);
   return (
     <IonApp>
       <IonReactRouter>
@@ -43,7 +46,9 @@ const App: React.FC = () => {
               <Redirect to="/page/HomePage" />
             </Route>
             <Route path="/page/HomePage" exact={true}>
-              <HomePage />
+              <HomePage
+                totalAmount={totalAmount}
+              />
             </Route>
             <Route path="/page/InsertReceipt" exact={true}>
               <InsertReceipt />

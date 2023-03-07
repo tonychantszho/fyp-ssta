@@ -1,11 +1,12 @@
 import { IonButtons, IonButton, IonContent, IonHeader, IonInput, IonList, IonMenuButton, IonPage, IonTitle, IonToolbar, IonItem, IonSelect, IonSelectOption, IonCol, IonRow, IonGrid, IonItemSliding, IonItemOption, IonItemOptions, IonLabel, IonIcon } from '@ionic/react';
 import { Console } from 'console';
-import { JSXElementConstructor, Key, ReactElement, ReactFragment, ReactPortal, useEffect, useRef, useState } from 'react';
+import { JSXElementConstructor, Key, ReactElement, ReactFragment, ReactPortal, useContext, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router';
 import { useStorage } from '../hooks/useSorage';
 import { nanoid } from 'nanoid';
 import { checkmarkCircle, closeCircle } from 'ionicons/icons';
 import _ from 'lodash';
+import StorageContext from '../contexts/StorageContext';
 
 enum Mode {
   edit = 1,
@@ -18,9 +19,8 @@ const Page2: React.FC = () => {
     description: string,
     price: number
   }
-
+  const storageContext = useContext(StorageContext);
   const { name } = useParams<{ name: string; }>();
-  const now = new Date();
   const { list, createPurchaseList, deleteContent, updateContent } = useStorage();
   const [counter, setCounter] = useState(1);
   const [editReult, setEditResult] = useState({ id: "", index: -1 });
@@ -91,7 +91,7 @@ const Page2: React.FC = () => {
     );
   }
 
-  const readOnlyLine = (id: string, content: PurchaseItem[], index: number) => {
+  const readOnlyLine = (Listindex: number, id: string, content: PurchaseItem[], index: number) => {
     return (
       <IonItemSliding key={nanoid()}>
         <IonItem lines="none" >
@@ -99,7 +99,7 @@ const Page2: React.FC = () => {
           <p>{content[index].price}</p>
         </IonItem>
         <IonItemOptions side="start">
-          <IonItemOption color='danger' onClick={() => removeContent(id, index)}>Delete</IonItemOption>
+          <IonItemOption color='danger' onClick={() => removeContent(Listindex, index)}>Delete</IonItemOption>
         </IonItemOptions>
         <IonItemOptions side="end">
           <IonItemOption
@@ -122,15 +122,15 @@ const Page2: React.FC = () => {
   }
 
   const printResult = () => {
-    list.map((item) => {
-      console.log(item.id, _.sumBy(item.content, (o) => o.price));
+    list.map((item, index) => {
+      // console.log(item.id, _.sumBy(item.content, (o) => o.price));
       const content = item.content;
       result.push(<p key={nanoid()}>id:{item.id},total:{item.total.toString()}</p>);
       for (let i = 0; i < content.length; i++) {
         if (i === editReult.index && item.id === editReult.id) {
           result.push(editableLine(content, i, 2));
         } else {
-          result.push(readOnlyLine(item.id, content, i));
+          result.push(readOnlyLine(index, item.id, content, i));
         }
       }
     });
@@ -138,6 +138,10 @@ const Page2: React.FC = () => {
   }
 
   const createList = async () => {
+    storageContext.dispatch({
+      type: 'increase',
+      payload: storageContext.state.totalAmount + 1
+    });
     const newItem = currentItem;
     console.log(newItem);
     await createPurchaseList(newItem);
@@ -145,7 +149,7 @@ const Page2: React.FC = () => {
     setCurrentItem([{ description: '', price: 0.1 }]);
   };
 
-  const updateList = async (id: string, index: number) => {
+  const updateList = async (id: number, index: number) => {
     ionList.current.closeSlidingItems();
     await deleteContent(id, index);
     //setCurrentList('update');
@@ -156,7 +160,7 @@ const Page2: React.FC = () => {
     ionList.current.closeSlidingItems();
   }
 
-  const removeContent = async (id: string, index: number) => {
+  const removeContent = async (id: number, index: number) => {
     ionList.current.closeSlidingItems();
     await deleteContent(id, index);
     //setCurrentList('update');
