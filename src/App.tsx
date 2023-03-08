@@ -29,13 +29,11 @@ import '@ionic/react/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
 import './theme/tailwind.css';
-import { useState } from 'react';
-import { useStorage } from './hooks/useSorage';
-
+import UpdateRecord from './pages/UpdateRecord';
+import Footer from './components/Footer';
 setupIonicReact();
 
 const App: React.FC = () => {
-  const [totalAmount, setTotalAmount] = useState(10);
   return (
     <IonApp>
       <IonReactRouter>
@@ -46,9 +44,7 @@ const App: React.FC = () => {
               <Redirect to="/page/HomePage" />
             </Route>
             <Route path="/page/HomePage" exact={true}>
-              <HomePage
-                totalAmount={totalAmount}
-              />
+              <HomePage />
             </Route>
             <Route path="/page/InsertReceipt" exact={true}>
               <InsertReceipt />
@@ -68,8 +64,12 @@ const App: React.FC = () => {
             <Route path="/page/RecommendedItem" exact={true}>
               <RecommendedItem />
             </Route>
+            <Route path="/page/UpdateRecord" exact={true}>
+              <UpdateRecord />
+            </Route>
           </IonRouterOutlet>
         </IonSplitPane>
+        <Footer />
       </IonReactRouter>
     </IonApp>
   );

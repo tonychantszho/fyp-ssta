@@ -43,7 +43,7 @@ export function useStorage() {
     }
 
     const deleteContent = async (id: number, index: number) => {
-        let newList = [...list];
+        let newList = [...storageContext.state.list];
         newList[Number(id)].content.splice(index, 1);
         newList[Number(id)].total = _.sumBy(newList[Number(id)].content, (o) => o.price);
         if (newList[Number(id)].total === 0) {
@@ -55,7 +55,7 @@ export function useStorage() {
     }
 
     const updateContent = async (tar: { id: string, index: number }, content: { description: string, price: number }) => {
-        let newList = [...list];
+        let newList = [...storageContext.state.list];
         newList[Number(tar.id)].content[tar.index] = content;
         newList[Number(tar.id)].total = _.sumBy(newList[Number(tar.id)].content, (o) => o.price);
         setList(newList);
@@ -63,10 +63,21 @@ export function useStorage() {
         store?.set(RECORD_KEY, newList);
     }
 
+    const deleteRecord = async (id: number) => {
+        let newList = [...storageContext.state.list];
+        console.log('deleteRecord', newList);
+        newList.splice(Number(id), 1);
+        setList(newList);
+        storageContext.dispatch({ type: 'setList', payload: newList });
+        store?.set(RECORD_KEY, newList);
+        console.log('deleteRecord', id);
+    }
+
     return {
         list,
         createPurchaseList,
         deleteContent,
-        updateContent
+        updateContent,
+        deleteRecord
     }
 }

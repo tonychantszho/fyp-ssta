@@ -63,6 +63,12 @@ const appPages: AppPage[] = [
     url: '/page/RecommendedItem',
     iosIcon: warningOutline,
     mdIcon: warningSharp
+  },
+  {
+    title: 'updateRecord',
+    url: '/page/UpdateRecord',
+    iosIcon: warningOutline,
+    mdIcon: warningSharp
   }
 ];
 
@@ -72,7 +78,7 @@ const Menu: React.FC = () => {
   const location = useLocation();
   return (
     <IonMenu contentId="main" type="overlay">
-      <IonContent color="secondary">
+      <IonContent color="secondary" className=' absolute z-50'>
         {/* <IonList id="inbox-list"> */}
         {appPages.map((appPage, index) => {
           return (

@@ -8,37 +8,14 @@ import _ from 'lodash';
 import StorageContext from '../contexts/StorageContext';
 import { useStorage } from '../hooks/useSorage';
 
-interface ProductApiRes {
-    company: string;
-    title: string;
-    discount: number;
-}
-
-interface AppProps {
-    totalAmount: number
-}
-
-interface RecordList {
-    id: string;
-    sum: string;
-}
-
-const HomePage: React.FC<AppProps> = (AppProps: AppProps) => {
+const HomePage: React.FC = () => {
     const storageContext = useContext(StorageContext);
-    const { list } = useStorage();
-    const [recordList, setRecordList] = useState<RecordList[]>([]);
+    const { deleteRecord } = useStorage();
     const recordRef = useRef<HTMLInputElement>(null);
-    // storageContext.dispatch({ type: 'setList', payload: list });
-    // if (storageContext.state.list.length === 0) {
-    //     storageContext.dispatch({ type: 'setList', payload: list });
-    // }
     useOutsideAlerter(recordRef);
-    console.log(storageContext.state.list);
     const AddNewRecord = () => {
         const target = document.getElementById("recordTable");
         const button = document.getElementById("recordBtn");
-        const control = document.getElementById("recordControl");
-        control?.classList.toggle("hidden");
         if (button?.style.display === 'none') {
             button.style.display = 'block';
         } else {
@@ -55,21 +32,10 @@ const HomePage: React.FC<AppProps> = (AppProps: AppProps) => {
         target?.classList.toggle("rounded-lg");
     };
 
-    useEffect(() => {
-        console.log("list changed");
-        storageContext.dispatch({ type: 'setList', payload: list });
-        const tmpList: RecordList[] = [];
-        storageContext.state.list.forEach((item) => {
-            tmpList.push({ id: item.id, sum: item.total.toString() });
-        });
-        setRecordList(tmpList);
-    }, [storageContext.state.list, list]);
-
     function useOutsideAlerter(ref: React.RefObject<HTMLInputElement>) {
         useEffect(() => {
             function handleClickOutside(event: any) {
                 if (ref.current && !ref.current.contains(event.target)) {
-                    // alert("You clicked outside of me!");
                     if (ref.current.classList.contains("h-96")) {
                         AddNewRecord();
                     }
@@ -83,7 +49,6 @@ const HomePage: React.FC<AppProps> = (AppProps: AppProps) => {
             };
         }, [ref]);
     }
-
     const ItemList = storageContext.state.list.length == 0 ?
         <div className='py-36 text-center'>
             no any record here
@@ -98,7 +63,7 @@ const HomePage: React.FC<AppProps> = (AppProps: AppProps) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {storageContext.state.list.map((item) =>
+                    {storageContext.state.list.map((item, index) =>
                         <tr>
                             <td colSpan={3}>
                                 <IonItemSliding key={nanoid()}>
@@ -106,15 +71,15 @@ const HomePage: React.FC<AppProps> = (AppProps: AppProps) => {
                                         <table className='w-full'>
                                             <tr>
                                                 <td className='text-center w-1/4'>{item.type}</td>
-                                                <td className='text-center w-1/2'>{item.content[0].description}</td>
-                                                <td className='text-center w-1/4'>{item.total.toString()}</td>
+                                                {/* <td className='text-center w-1/2'>{item.description}</td> */}
+                                                <td className='text-center w-1/4'>{item.total}</td>
                                                 {/* <p key={nanoid()}>type:{item.type},description:{item.content[0].description},total:{item.total.toString()}</p> */}
                                             </tr>
                                         </table>
                                     </IonItem>
                                     <IonItemOptions side="start">
                                         <IonItemOption color='danger'
-                                        //onClick={() => removeContent(Listindex, index)}
+                                            onClick={() => deleteRecord(index)}
                                         >Delete</IonItemOption>
                                     </IonItemOptions>
                                     <IonItemOptions side="end">
@@ -156,55 +121,11 @@ const HomePage: React.FC<AppProps> = (AppProps: AppProps) => {
                 className="relative h-[100%] bg-[length:100%_100%]"
                 style={{ backgroundImage: `url(${Background})` }}
             >
-                {PropertyViewer(AppProps.totalAmount, "text-white ml-4 ")}
+                {PropertyViewer(0, "text-white ml-4 ")}
                 {PropertyViewer(330000.3, "text-green-400 mx-auto right-0 mr-4")}
                 <img className="absolute h-[200px] mx-auto left-0 right-0 bottom-[5%]" src={Seed} />
             </div>
-            <IonFooter>
-                {/* <IonToolbar> */}
-                <div className="bg-white h-12 w-full flex">
-                    <div className="h-12 w-1/5 flex justify-center">
-                        <div className="h-12 w-12">
-                            {/* <IonMenuButton /> */}
-                            <button onClick={IncreaseAmount}>hiii</button>
-                        </div>
-                        {/* <IonButtons slot="start"> */}
-                    </div>
-                    <div className="h-12 w-1/5 flex justify-center">
-                        <div className="h-12 w-12">
-                            <IonMenuButton />
-                        </div>
-                    </div>
-                    <div className="h-12 w-1/5 flex justify-center">
-                        <div id="recordTable" ref={recordRef} className='bg-lime-400 h-20 w-20 z-10 rounded-full flex justify-center flex-wrap absolute bottom-4 transition-all'>
-                            <button id="recordBtn" className='h-20 w-20 bg-lime-400 hover:bg-lime-300 p-3 rounded-full absolute justify-center  flex-wrap' onClick={() => AddNewRecord()}>
-                                <img className="h-8 m-auto" src={RecordIcon} />
-                                <p>record</p>
-                            </button>
-                            <div key={storageContext.state.list.length} id="recordControl" className=' h-full w-full max-w-full absolute right-0 hidden z-20'>
 
-                                <div className='w-full h-7 bg-white'>
-                                    <button className=" bg-red-600 w-5 h-5 m-1 rounded-full float-right justify-end" onClick={() => AddNewRecord()}>X</button>
-                                </div>
-                                {ItemList}
-                                {/* <RecordList /> */}
-                            </div>
-                        </div>
-                    </div>
-                    <div className="h-12 w-1/5 flex justify-center">
-                        <div className="h-12 w-12">
-                            <IonMenuButton />
-                        </div>
-                    </div>
-                    <div className="h-12 w-1/5 flex justify-center">
-                        <div className="h-12 w-12">
-                            <IonMenuButton />
-                        </div>
-                    </div>
-                </div>
-                {/* </IonButtons> */}
-                {/* </IonToolbar> */}
-            </IonFooter>
         </IonPage>
     );
 };

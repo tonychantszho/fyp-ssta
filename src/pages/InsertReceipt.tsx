@@ -7,6 +7,7 @@ import { nanoid } from 'nanoid';
 import { checkmarkCircle, closeCircle } from 'ionicons/icons';
 import _ from 'lodash';
 import StorageContext from '../contexts/StorageContext';
+import Footer from '../components/Footer';
 
 enum Mode {
   edit = 1,
@@ -200,6 +201,7 @@ const Page2: React.FC = () => {
           {printResult()}
         </IonList>
       </IonContent>
+      {/* <Footer /> */}
     </IonPage >
   );
 };

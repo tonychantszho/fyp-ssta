@@ -12,7 +12,11 @@ export function stroageReducer(state: StorageInterface, action: Action) {
                 ...state,
                 list: action.payload
             }
-        // return initialState;
+        case 'setSelectedRecordId':
+            return {
+                ...state,
+                selectedRecordId: action.payload
+            }
         case 'init':
             return initialState;
         default:

@@ -8,11 +8,11 @@ import StroageProvider from './contexts/StorageProvider';
 const container = document.getElementById('root');
 const root = createRoot(container!);
 root.render(
-  <React.StrictMode>
-    <StroageProvider>
-      <App />
-    </StroageProvider>
-  </React.StrictMode>
+  //<React.StrictMode>
+  <StroageProvider>
+    <App />
+  </StroageProvider>
+  //</React.StrictMode>
 );
 
 // If you want your app to work offline and load faster, you can change
