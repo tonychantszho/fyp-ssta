@@ -2,8 +2,6 @@ import { IonButtons, IonCol, IonContent, IonGrid, IonHeader, IonItem, IonList, I
 import { trashBin } from 'ionicons/icons';
 import { useState } from 'react';
 import { useParams } from 'react-router';
-import ExploreContainer from '../components/ExploreContainer';
-import './Page.css';
 
 const ShoppingList: React.FC = () => {
   interface SearchResult {

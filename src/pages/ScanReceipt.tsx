@@ -5,6 +5,7 @@ import Tesseract, { createWorker } from 'tesseract.js';
 import { useStorage } from '../hooks/useSorage';
 import { useEffect, useState } from 'react';
 import { closeCircle } from 'ionicons/icons';
+// import cv, { Mat, Rect } from "opencv-ts";
 
 const ScanReceipt: React.FC = () => {
     interface PurchaseItem {
@@ -143,10 +144,19 @@ const ScanReceipt: React.FC = () => {
     const createList = async () => {
         const newItem = currentItem;
         console.log(newItem);
-        await createPurchaseList(newItem);
+        // await createPurchaseList(newItem, "eat");
         setCounter(0);
         setCurrentItem([{ description: '', price: 0.1 }]);
     };
+
+    // const imageProcessing = async (src: string) => {
+    //     const mat = await cv.imread(src);
+    //     const gray = new cv.Mat();
+    //     cv.cvtColor(mat, gray, cv.COLOR_RGBA2GRAY, 0);
+    //     cv.imshow('canvasOutput', gray);
+    //     mat.delete();
+    //     gray.delete();
+    // }
 
 
     return (
@@ -160,6 +170,7 @@ const ScanReceipt: React.FC = () => {
                 </IonToolbar>
             </IonHeader>
             <IonContent>
+                <img src="../image/test.jpg" />
                 <IonItem>
                     <IonButton expand="block" onClick={() => { scanDocument() }}>Press to scan</IonButton>
                     <img id="scannedImage" />

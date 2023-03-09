@@ -2,7 +2,10 @@
 http://ionicframework.com/docs/theming/ */
 
 /** Ionic CSS Variables **/
+
 :root {
+  --ion-background-color: #d8ffd0;
+  --ion-font-family: 'Poppins', sans-serif;
   /** primary **/
   --ion-color-primary: #3880FF;
   --ion-color-primary-rgb: 56, 128, 255;
@@ -82,6 +85,56 @@ http://ionicframework.com/docs/theming/ */
   --ion-color-transparent-contrast-rgb: 0, 0, 0;
   --ion-color-transparent-shade: #d7d8da;
   --ion-color-transparent-tint: #f5f6f9;
+
+  /** lime-300 **/
+  --ion-color-lime: rgb(163 230 53 / var(--tw-bg-opacity));
+  --ion-color-lime-rgb: 163, 230, 53;
+  --ion-color-lime-contrast: #000000;
+  --ion-color-lime-contrast-rgb: 0, 0, 0;
+  --ion-color-lime-shade: #d7d8da;
+  --ion-color-lime-tint: #f5f6f9;
+
+  /* brown */
+  --ion-color-brown: #ab6f1b;
+  --ion-color-brown-rgb: 171, 111, 27;
+  --ion-color-brown-contrast: #ffffff;
+  --ion-color-brown-contrast-rgb: 255, 255, 255;
+  --ion-color-brown-shade: #966218;
+  --ion-color-brown-tint: #b37d32;
+}
+
+ion-button {
+  --tw-bg-opacity: 1;
+  --background: rgb(190 242 100 / var(--tw-bg-opacity));
+  --background-hover: rgb(217 249 157 / var(--tw-bg-opacity));
+  --background-activated: rgb(163 230 53 / var(--tw-bg-opacity));
+  color: black;
+}
+
+.recordList {
+  --background: rgb(236 252 203 / var(--tw-bg-opacity));
+  ;
+}
+
+.ion-color-brown {
+  --ion-color-base: var(--ion-color-brown);
+  --ion-color-base-rgb: var(--ion-color-brown-rgb);
+  --ion-color-contrast: var(--ion-color-brown-contrast);
+  --ion-color-contrast-rgb: var(--ion-color-brown-contrast-rgb);
+  --ion-color-shade: var(--ion-color-brown-shade);
+  --ion-color-tint: var(--ion-color-brown-tint);
+}
+
+ion-datetime {
+  --background: #ffce87;
+  --background-rgb: 255, 206, 135;
+  border-radius: 16px;
+  box-shadow: rgba(var(--ion-color-brown-rgb), 0.3) 0px 10px 15px -3px;
+  /* --background: #fff1f2;
+  --background-rgb: 255, 241, 242;
+
+  border-radius: 16px;
+  box-shadow: rgba(var(--ion-color-rose-rgb), 0.3) 0px 10px 15px -3px; */
 }
 
 @media (prefers-color-scheme: dark) {
@@ -207,7 +260,6 @@ http://ionicframework.com/docs/theming/ */
   .md body {
     --ion-background-color: #121212;
     --ion-background-color-rgb: 18, 18, 18;
-
     --ion-text-color: #ffffff;
     --ion-text-color-rgb: 255, 255, 255;
 
@@ -244,5 +296,9 @@ http://ionicframework.com/docs/theming/ */
 
   ion-menu-button {
     --background: #93e9be;
+  }
+
+  .ionList {
+    background-color: red;
   }
 }

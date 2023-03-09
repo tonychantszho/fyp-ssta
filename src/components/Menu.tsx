@@ -13,6 +13,8 @@ import {
 import { useLocation } from 'react-router-dom';
 import { archiveOutline, archiveSharp, bookmarkOutline, heartOutline, heartSharp, mailOutline, mailSharp, paperPlaneOutline, paperPlaneSharp, trashOutline, trashSharp, warningOutline, warningSharp } from 'ionicons/icons';
 import './Menu.css';
+import StorageContext from '../contexts/StorageContext';
+import { useContext } from 'react';
 
 interface AppPage {
   url: string;
@@ -29,20 +31,20 @@ const appPages: AppPage[] = [
     mdIcon: mailSharp
   },
   {
-    title: 'Input Receipt',
-    url: '/page/InsertReceipt',
+    title: 'Insert Record',
+    url: '/page/InsertRecord',
     iosIcon: mailOutline,
     mdIcon: mailSharp
   },
   {
     title: 'Scan Receipt',
-    url: '/page/ScanReceipt',
+    url: '/page/ScanImage',
     iosIcon: paperPlaneOutline,
     mdIcon: paperPlaneSharp
   },
   {
-    title: 'Purchase Record',
-    url: '/page/PurchaseRecord',
+    title: 'Record List',
+    url: '/page/RecordList',
     iosIcon: heartOutline,
     mdIcon: heartSharp
   },
@@ -63,19 +65,16 @@ const appPages: AppPage[] = [
     url: '/page/RecommendedItem',
     iosIcon: warningOutline,
     mdIcon: warningSharp
-  },
-  {
-    title: 'updateRecord',
-    url: '/page/UpdateRecord',
-    iosIcon: warningOutline,
-    mdIcon: warningSharp
   }
 ];
 
-const labels = ['Family', 'Friends', 'Notes', 'Work', 'Travel', 'Reminders'];
-
 const Menu: React.FC = () => {
   const location = useLocation();
+  const storageContext = useContext(StorageContext);
+  const handleClick = () => {
+    storageContext.dispatch({ type: 'unSetSelectedRecord' });
+  };
+
   return (
     <IonMenu contentId="main" type="overlay">
       <IonContent color="secondary" className=' absolute z-50'>
@@ -83,7 +82,7 @@ const Menu: React.FC = () => {
         {appPages.map((appPage, index) => {
           return (
             <IonMenuToggle key={index} autoHide={false}>
-              <IonItem className={location.pathname === appPage.url ? 'selected' : ''} routerLink={appPage.url} routerDirection="none" lines="none" detail={false} color="transparent">
+              <IonItem className={location.pathname === appPage.url ? 'selected' : ''} routerLink={appPage.url} routerDirection="none" lines="none" detail={false} color="transparent" onClick={handleClick}>
                 <IonIcon slot="start" ios={appPage.iosIcon} md={appPage.mdIcon} />
                 <IonLabel>{appPage.title}</IonLabel>
               </IonItem>

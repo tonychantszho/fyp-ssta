@@ -3,6 +3,7 @@ import { useStorage } from '../hooks/useSorage';
 import { useContext, useEffect, useState } from 'react';
 import { closeCircle } from 'ionicons/icons';
 import StorageContext from '../contexts/StorageContext';
+import { PurchaseList } from '../typings/Interface';
 
 const ScanReceipt: React.FC = () => {
     const storageContext = useContext(StorageContext);
@@ -22,17 +23,20 @@ const ScanReceipt: React.FC = () => {
     const lines: React.ReactNode[] = [];
     useEffect(() => {
         const contentsss: PurchaseItem[] = [];
-        const target: number = storageContext.state.selectedRecordId;
-        console.log(target);
-        if (storageContext.state.list.length > 0) {
-            setCounter(storageContext.state.list[target].content.length);
-            console.log(storageContext.state.list[0].content[0]);
-            for (let i = 0; i < storageContext.state.list[target].content.length; i++) {
-                contentsss.push({ description: storageContext.state.list[target].content[i].description, price: storageContext.state.list[target].content[i].price });
+        const target: PurchaseList = storageContext.state.selectedRecord;
+        console.log(storageContext.state.selectedRecord);
+        if (target.total > 0) {
+            setCounter(target.content.length);
+            for (let i = 0; i < target.content.length; i++) {
+                contentsss.push({ description: target.content[i].description, price: target.content[i].price });
             }
             setCurrentItem(contentsss);
+        }else{
+            setCounter(0);
+            setCurrentItem([{ description: '', price: 0.1 }]);
         }
-    }, [storageContext.state.selectedRecordId])
+    }, [storageContext.state.selectedRecord])
+    
     const editableLine = (content: PurchaseItem[], i: number, mode: Mode) => {
         console.log("i=", i)
         return (
@@ -100,7 +104,7 @@ const ScanReceipt: React.FC = () => {
     const createList = async () => {
         const newItem = currentItem;
         console.log(newItem);
-        await createPurchaseList(newItem);
+        // await createPurchaseList(newItem, "eat");
         setCounter(0);
         setCurrentItem([{ description: '', price: 0.1 }]);
     };

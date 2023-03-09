@@ -1,4 +1,4 @@
-import { IonFooter, IonMenuButton, IonItem, IonItemSliding, IonItemOption, IonItemOptions, IonLabel, IonNavLink } from '@ionic/react';
+import { IonFooter, IonMenuButton, IonItem, IonItemSliding, IonItemOption, IonItemOptions, IonLabel, IonNavLink, IonText } from '@ionic/react';
 import RecordIcon from "../image/record.png";
 import { useContext, useEffect, useState, useRef } from 'react';
 import { menuController } from "@ionic/core/components";
@@ -19,14 +19,15 @@ const Footer: React.FC = () => {
     const AddNewRecord = () => {
         const target = document.getElementById("recordTable");
         const button = document.getElementById("recordBtn");
-        if (button?.classList.contains("bg-lime-400")) {
-            //button.style.display = 'block';
-            button.classList.remove("bg-lime-400");
-            button.classList.add("bg-lime-100");
+        const btnText = document.getElementById("btnText");
+        button?.classList.toggle("bg-lime-400");
+        button?.classList.toggle("hover:bg-lime-300");
+        button?.classList.toggle("bg-sky-400");
+        button?.classList.toggle("hover:bg-sky-300");
+        if (!button?.classList.contains("bg-lime-400")) {
+            btnText!.textContent = "add";
         } else {
-            console.log("else");
-            //button?.classList.remove("bg-white");
-            //button?.classList.add("bg-lime-100");
+            btnText!.textContent = "record";
         }
         //icon
         target?.classList.toggle("h-20");
@@ -94,12 +95,12 @@ const Footer: React.FC = () => {
                         <tr>
                             <td colSpan={3}>
                                 <IonItemSliding key={nanoid()}>
-                                    <IonItem lines="none" >
+                                    <IonItem lines="none" class='recordList'>
                                         <table className='w-full'>
                                             <tr>
                                                 <td className='text-center w-1/4'>{item.type}</td>
                                                 <td className='text-center w-1/2'>{item.content[0].description}</td>
-                                                <td className='text-center w-1/4'>{item.total}</td>
+                                                <td className='text-center w-1/4'>${item.total}</td>
                                                 {/* <p key={nanoid()}>type:{item.type},description:{item.content[0].description},total:{item.total.toString()}</p> */}
                                             </tr>
                                         </table>
@@ -110,15 +111,13 @@ const Footer: React.FC = () => {
                                         >Delete</IonItemOption>
                                     </IonItemOptions>
                                     <IonItemOptions side="end">
-                                        {/* <IonItem routerLink='../page/UpdateRecord' routerDirection="forward" lines="none" detail={false} color="transparent"> */}
-
                                         <IonItemOption
                                             routerLink='../page/InsertReceipt'
                                             routerDirection="root"
                                             color='secondary'
                                             onClick={() => {
-                                                storageContext.dispatch({ type: 'setSelectedRecordId', payload: index });
-                                                history.push(`/page/UpdateRecord`);
+                                                storageContext.dispatch({ type: 'setSelectedRecord', payload: item });
+                                                history.push(`/page/InsertReceipt`);
                                                 AddNewRecord();
                                             }}>
                                             Update
@@ -141,7 +140,16 @@ const Footer: React.FC = () => {
         </div>
         :
         <IonMenuButton color="dark" />
-
+    const MainBtnClick = () => {
+        const button = document.getElementById("recordBtn");
+        if (!button?.classList.contains("bg-lime-400")) {
+            AddNewRecord();
+            storageContext.dispatch({ type: 'unSetSelectedRecord' });
+            history.push(`/page/InsertRecord`);
+        } else {
+            AddNewRecord();
+        }
+    }
     return (
         <IonFooter className=' absolute bottom-0 w-screen z-40 h-12'>
             {/* <IonToolbar> */}
@@ -150,12 +158,12 @@ const Footer: React.FC = () => {
                     <div className="h-12 w-12">
                         {menuBtn}
                     </div>
-
+                    {/* onClick={() => { history.push(`/page/RecordList`); }} */}
                     {/* <IonButtons slot="start"> */}
                 </div>
                 <div className="h-12 w-1/5 flex justify-center">
                     <div className="h-12 w-12">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="-5 -5 30 30"><path d="M20 3H4c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2h16c1.103 0 2-.897 2-2V5c0-1.103-.897-2-2-2zM4 19V5h16l.002 14H4z"></path><path d="M6 7h12v2H6zm0 4h12v2H6zm0 4h6v2H6z"></path></svg>
+                        <svg onClick={() => { history.push(`/page/RecordList`); }} xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="-5 -5 30 30"><path d="M20 3H4c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2h16c1.103 0 2-.897 2-2V5c0-1.103-.897-2-2-2zM4 19V5h16l.002 14H4z"></path><path d="M6 7h12v2H6zm0 4h12v2H6zm0 4h6v2H6z"></path></svg>
                         <IonMenuButton className='invisible' />
                     </div>
                 </div>
@@ -163,10 +171,10 @@ const Footer: React.FC = () => {
                     <div id="recordTable" ref={recordRef}
                         className='bg-lime-400 h-20 w-20 z-10 rounded-full flex justify-center overflow-hidden flex-wrap absolute bottom-4 transition-all'>
                         <button id="recordBtn" className='h-20 w-20 bg-lime-400 hover:bg-lime-300 p-3 rounded-full absolute bottom-0 justify-center  flex-wrap z-30'
-                            onClick={() => AddNewRecord()}
+                            onClick={() => MainBtnClick()}
                         >
                             <img className="h-8 m-auto" src={RecordIcon} />
-                            <p>record</p>
+                            <IonText id="btnText">record</IonText>
                         </button>
                         <div key={storageContext.state.list.length} id="recordControl"
                             className='h-full overflow-hidden w-full max-w-full absolute right-0 z-20'
@@ -174,7 +182,8 @@ const Footer: React.FC = () => {
                             <div>
                                 <div className='w-full h-7 bg-white'>
                                     <button className=" bg-red-600 w-5 h-5 m-1 rounded-full float-right justify-end"
-                                        onClick={() => AddNewRecord()}
+                                        onClick={() =>
+                                            AddNewRecord()}
                                     >X</button>
                                 </div>
                                 <div>

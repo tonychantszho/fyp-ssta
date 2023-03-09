@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { Drivers, Storage } from "@ionic/storage";
 import * as CordovaSQLiteDriver from "localforage-cordovasqlitedriver";
 import _ from 'lodash';
+import { nanoid } from 'nanoid';
 import { PurchaseList } from "../typings/Interface";
 import StorageContext from "../contexts/StorageContext";
 
@@ -29,10 +30,19 @@ export function useStorage() {
         initStorage();
     }, []);
 
-    const createPurchaseList = async (content: { description: string, price: number }[]) => {
+    const createPurchaseList = async (content: { description: string, price: number }[], type: string, date: string) => {
+        if (type !== 'Income') {
+            content = content.map((item) => {
+                return {
+                    ...item,
+                    price: -item.price
+                }
+            })
+        }
         const newList = {
-            id: new Date().toISOString(),
-            type: 'eat',
+            id: nanoid(),
+            date: date,
+            type: type,
             content: content,
             total: _.sumBy(content, (o) => o.price)
         }
@@ -40,6 +50,23 @@ export function useStorage() {
         setList(updatedList);
         storageContext.dispatch({ type: 'setList', payload: updatedList });
         store?.set(RECORD_KEY, updatedList);
+    }
+
+    const updateContent = async (id: string, content: { description: string, price: number }[], type: string, date: string) => {
+        let newList = [...storageContext.state.list];
+
+        const updateContent = {
+            id: id,
+            date: date,
+            type: type,
+            content: content,
+            total: _.sumBy(content, (o) => o.price)
+        }
+        const index = newList.findIndex((item) => item.id === id);
+        newList[index] = updateContent;
+        setList(newList);
+        storageContext.dispatch({ type: 'setList', payload: newList });
+        store?.set(RECORD_KEY, newList);
     }
 
     const deleteContent = async (id: number, index: number) => {
@@ -54,15 +81,6 @@ export function useStorage() {
         store?.set(RECORD_KEY, newList);
     }
 
-    const updateContent = async (tar: { id: string, index: number }, content: { description: string, price: number }) => {
-        let newList = [...storageContext.state.list];
-        newList[Number(tar.id)].content[tar.index] = content;
-        newList[Number(tar.id)].total = _.sumBy(newList[Number(tar.id)].content, (o) => o.price);
-        setList(newList);
-        storageContext.dispatch({ type: 'setList', payload: newList });
-        store?.set(RECORD_KEY, newList);
-    }
-
     const deleteRecord = async (id: number) => {
         let newList = [...storageContext.state.list];
         console.log('deleteRecord', newList);
@@ -70,7 +88,6 @@ export function useStorage() {
         setList(newList);
         storageContext.dispatch({ type: 'setList', payload: newList });
         store?.set(RECORD_KEY, newList);
-        console.log('deleteRecord', id);
     }
 
     return {

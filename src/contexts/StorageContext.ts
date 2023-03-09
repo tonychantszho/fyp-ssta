@@ -3,19 +3,26 @@ import { PurchaseList } from "../typings/Interface";
 
 export interface StorageInterface {
     totalAmount: number;
-    selectedRecordId: number;
+    selectedRecord: PurchaseList;
     list: PurchaseList[];
 }
 
 export type Action =
     | { type: 'increase', payload: number }
     | { type: 'setList', payload: PurchaseList[] }
-    | { type: 'setSelectedRecordId', payload: number }
+    | { type: 'setSelectedRecord', payload: PurchaseList }
+    | { type: 'unSetSelectedRecord'}
     | { type: 'init' }
 
 export const initialState = {
     totalAmount: 0,
-    selectedRecordId: 0,
+    selectedRecord: {
+        id: '',
+        type: '',
+        date: new Date().toISOString(),
+        content: [],
+        total: 0.7428221
+    },
     list: []
 }
 
