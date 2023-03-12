@@ -24,6 +24,11 @@ export function stroageReducer(state: StorageInterface, action: Action) {
                 ...state,
                 selectedRecord: initialState.selectedRecord
             }
+        case 'setShoppingCart':
+            return {
+                ...state,
+                shoppingCart: action.payload,
+            }
         case 'init':
             return initialState;
         default:

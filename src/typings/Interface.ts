@@ -6,11 +6,14 @@ export interface PurchaseList {
     total: number;
 }
 
-export interface DatetimeChangeEventDetail {
-    value?: string | null;
+export interface ShoppingCart {
+    shop: string;
+    product: string;
+    price: number;
+    address: string;
 }
 
-export interface DatetimeCustomEvent extends CustomEvent {
-    detail: DatetimeChangeEventDetail;
-    target: HTMLIonDatetimeElement;
+export interface PurchaseItem {
+    description: string,
+    price: number
   }

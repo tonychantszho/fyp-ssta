@@ -3,15 +3,12 @@ import {
   IonIcon,
   IonItem,
   IonLabel,
-  IonList,
-  IonListHeader,
   IonMenu,
-  IonMenuToggle,
-  IonNote,
+  IonMenuToggle
 } from '@ionic/react';
 
 import { useLocation } from 'react-router-dom';
-import { archiveOutline, archiveSharp, bookmarkOutline, heartOutline, heartSharp, mailOutline, mailSharp, paperPlaneOutline, paperPlaneSharp, trashOutline, trashSharp, warningOutline, warningSharp } from 'ionicons/icons';
+import { mailOutline, mailSharp, warningOutline, warningSharp } from 'ionicons/icons';
 import './Menu.css';
 import StorageContext from '../contexts/StorageContext';
 import { useContext } from 'react';
@@ -30,36 +27,36 @@ const appPages: AppPage[] = [
     iosIcon: mailOutline,
     mdIcon: mailSharp
   },
-  {
-    title: 'Insert Record',
-    url: '/page/InsertRecord',
-    iosIcon: mailOutline,
-    mdIcon: mailSharp
-  },
-  {
-    title: 'Scan Receipt',
-    url: '/page/ScanImage',
-    iosIcon: paperPlaneOutline,
-    mdIcon: paperPlaneSharp
-  },
-  {
-    title: 'Record List',
-    url: '/page/RecordList',
-    iosIcon: heartOutline,
-    mdIcon: heartSharp
-  },
-  {
-    title: 'Search Item',
-    url: '/page/ShoppingList',
-    iosIcon: archiveOutline,
-    mdIcon: archiveSharp
-  },
-  {
-    title: 'Shopping List',
-    url: '/page/SearchItem',
-    iosIcon: trashOutline,
-    mdIcon: trashSharp
-  },
+  // {
+  //   title: 'Insert Record',
+  //   url: '/page/InsertRecord',
+  //   iosIcon: mailOutline,
+  //   mdIcon: mailSharp
+  // },
+  // {
+  //   title: 'Scan Receipt',
+  //   url: '/page/ScanImage',
+  //   iosIcon: paperPlaneOutline,
+  //   mdIcon: paperPlaneSharp
+  // },
+  // {
+  //   title: 'Record List',
+  //   url: '/page/RecordList',
+  //   iosIcon: heartOutline,
+  //   mdIcon: heartSharp
+  // },
+  // {
+  //   title: 'Search Item',
+  //   url: '/page/ShoppingList',
+  //   iosIcon: archiveOutline,
+  //   mdIcon: archiveSharp
+  // },
+  // {
+  //   title: 'Shopping Cart',
+  //   url: '/page/ShoppingCart',
+  //   iosIcon: trashOutline,
+  //   mdIcon: trashSharp
+  // },
   {
     title: 'recommended product',
     url: '/page/RecommendedItem',

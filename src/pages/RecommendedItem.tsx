@@ -1,17 +1,6 @@
-import { IonButton, IonButtons, IonContent, IonHeader, IonInput, IonItem, IonLabel, IonMenuButton, IonPage, IonSpinner, IonTitle, IonToolbar } from '@ionic/react';
-import axios from 'axios';
-import { useState } from 'react';
-
-interface ProductApiRes {
-    title: string;
-    discount: number;
-}
+import { IonButtons, IonContent, IonHeader, IonItem, IonMenuButton, IonPage, IonTitle, IonToolbar } from '@ionic/react';
 
 const recommendedItem: React.FC = () => {
-
-    const handleGetResult = async () => {
-    }
-
     return (
         <IonPage>
             <IonHeader>

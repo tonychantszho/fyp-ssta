@@ -1,17 +1,14 @@
-import { IonButtons, IonFooter, IonButton, IonContent, IonHeader, IonInput, IonList, IonMenuButton, IonPage, IonTitle, IonToolbar, IonItem, IonSelect, IonSelectOption, IonCol, IonRow, IonGrid, IonItemSliding, IonItemOption, IonItemOptions, IonLabel, IonIcon } from '@ionic/react';
+import { IonPage } from '@ionic/react';
 import Seed from '../image/seed.png';
 import Background from "../image/bg.jpg";
-import RecordIcon from "../image/record.png";
-import { useContext, useEffect, useState, useRef } from 'react';
-import { nanoid } from 'nanoid';
-import _ from 'lodash';
+import { useContext, useEffect } from 'react';
+// import { nanoid } from 'nanoid';
+// import _ from 'lodash';
 import StorageContext from '../contexts/StorageContext';
-import { useStorage } from '../hooks/useSorage';
+import { RecordStorage } from '../hooks/RecordStorage';
 
 const HomePage: React.FC = () => {
-    const storageContext = useContext(StorageContext);
-
-    const { list } = useStorage();
+    const { list } = RecordStorage();
     useEffect(() => {
 
     }, [list]);
@@ -29,14 +26,6 @@ const HomePage: React.FC = () => {
             </div >
         );
     };
-
-    function IncreaseAmount() {
-        console.log("increase");
-        storageContext.dispatch({
-            type: 'increase',
-            payload: storageContext.state.totalAmount + 1
-        });
-    }
     return (
         <IonPage>
             <div
@@ -45,7 +34,7 @@ const HomePage: React.FC = () => {
             >
                 {PropertyViewer(0, "text-white ml-4 ")}
                 {PropertyViewer(330000.3, "mx-auto right-0 mr-4")}
-                <img className="absolute h-[200px] mx-auto left-0 right-0 bottom-[5%]" src={Seed} />
+                <img className="absolute h-[200px] mx-auto left-0 right-0 bottom-[5%]" src={Seed} alt="background" />
             </div>
 
         </IonPage>

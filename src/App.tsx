@@ -4,10 +4,9 @@ import { Redirect, Route } from 'react-router-dom';
 import Menu from './components/Menu';
 import HomePage from './pages/HomePage';
 import InsertRecord from './pages/InsertRecord';
-import ScanImage from './pages/ScanImage';
+import SearchPrice from './pages/SearchPrice';
 import RecordList from './pages/RecordList';
-import ShoppingList from './pages/ShoppingList';
-import SearchItem from './pages/SearchItem';
+import CrossCart from './pages/ShoppingCart';
 import RecommendedItem from './pages/RecommendedItem';
 
 /* Core CSS required for Ionic components to work properly */
@@ -30,6 +29,7 @@ import '@ionic/react/css/display.css';
 import './theme/variables.css';
 import './theme/tailwind.css';
 import Footer from './components/Footer';
+
 setupIonicReact();
 
 const App: React.FC = () => {
@@ -48,17 +48,17 @@ const App: React.FC = () => {
             <Route path="/page/InsertRecord" exact={true}>
               <InsertRecord />
             </Route>
-            <Route path="/page/ScanImage" exact={true}>
+            {/* <Route path="/page/ScanImage" exact={true}>
               <ScanImage />
-            </Route>
+            </Route> */}
             <Route path="/page/RecordList" exact={true}>
               <RecordList />
             </Route>
-            <Route path="/page/ShoppingList" exact={true}>
-              <ShoppingList />
+            <Route path="/page/SearchPrice" exact={true}>
+              <SearchPrice />
             </Route>
-            <Route path="/page/SearchItem" exact={true}>
-              <SearchItem />
+            <Route path="/page/ShoppingCart" exact={true}>
+              <CrossCart />
             </Route>
             <Route path="/page/RecommendedItem" exact={true}>
               <RecommendedItem />

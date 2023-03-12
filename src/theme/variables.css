@@ -137,6 +137,10 @@ ion-datetime {
   box-shadow: rgba(var(--ion-color-rose-rgb), 0.3) 0px 10px 15px -3px; */
 }
 
+.grid {
+  --ion-grid-columns: 12;
+}
+
 @media (prefers-color-scheme: dark) {
   /*
    * Dark Colors

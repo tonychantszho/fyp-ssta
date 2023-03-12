@@ -1,17 +1,19 @@
 import { createContext } from "react";
-import { PurchaseList } from "../typings/Interface";
+import { PurchaseList, ShoppingCart } from "../typings/Interface";
 
 export interface StorageInterface {
     totalAmount: number;
     selectedRecord: PurchaseList;
     list: PurchaseList[];
+    shoppingCart: ShoppingCart[];
 }
 
 export type Action =
     | { type: 'increase', payload: number }
     | { type: 'setList', payload: PurchaseList[] }
     | { type: 'setSelectedRecord', payload: PurchaseList }
-    | { type: 'unSetSelectedRecord'}
+    | { type: 'unSetSelectedRecord' }
+    | { type: 'setShoppingCart', payload: ShoppingCart[] }
     | { type: 'init' }
 
 export const initialState = {
@@ -19,11 +21,12 @@ export const initialState = {
     selectedRecord: {
         id: '',
         type: '',
-        date: new Date().toISOString(),
+        date: new Date().getFullYear() + '-' + (new Date().getMonth() + 1) + '-' + new Date().getDate(),
         content: [],
         total: 0.7428221
     },
-    list: []
+    list: [],
+    shoppingCart: []
 }
 
 const StorageContext = createContext<{

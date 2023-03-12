@@ -1,5 +1,5 @@
 import { IonButton, IonButtons, IonCol, IonList, IonContent, IonHeader, IonIcon, IonInput, IonItem, IonMenuButton, IonPage, IonRow, IonTitle, IonToolbar, IonGrid } from '@ionic/react';
-import { useStorage } from '../hooks/useSorage';
+import { RecordStorage } from '../hooks/RecordStorage';
 import { useContext, useEffect, useState } from 'react';
 import { closeCircle } from 'ionicons/icons';
 import StorageContext from '../contexts/StorageContext';
@@ -17,7 +17,7 @@ const ScanReceipt: React.FC = () => {
         read = 2
     }
 
-    const { createPurchaseList } = useStorage();
+    const { createPurchaseList } = RecordStorage();
     const [counter, setCounter] = useState(0);
     const [currentItem, setCurrentItem] = useState<PurchaseItem[]>([{ description: '', price: 0.1 }]);
     const lines: React.ReactNode[] = [];
@@ -31,12 +31,12 @@ const ScanReceipt: React.FC = () => {
                 contentsss.push({ description: target.content[i].description, price: target.content[i].price });
             }
             setCurrentItem(contentsss);
-        }else{
+        } else {
             setCounter(0);
             setCurrentItem([{ description: '', price: 0.1 }]);
         }
     }, [storageContext.state.selectedRecord])
-    
+
     const editableLine = (content: PurchaseItem[], i: number, mode: Mode) => {
         console.log("i=", i)
         return (
