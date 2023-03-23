@@ -91,7 +91,7 @@ const Footer: React.FC = () => {
                 </thead>
                 <tbody>
                     {storageContext.state.list.map((item, index) =>
-                        <tr>
+                        <tr key={nanoid()}>
                             <td colSpan={3}>
                                 <IonItemSliding key={nanoid()}>
                                     <IonItem lines="none" class='recordList'>

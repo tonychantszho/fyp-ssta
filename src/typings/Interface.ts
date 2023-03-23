@@ -17,3 +17,9 @@ export interface PurchaseItem {
     description: string,
     price: number
   }
+
+export interface SearchResult {
+    shop: string,
+    productNames: string,
+    productPrices: number
+  }
