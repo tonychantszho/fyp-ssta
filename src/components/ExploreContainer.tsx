@@ -1,4 +1,3 @@
-import './ExploreContainer.css';
 import Tesseract, { createWorker } from 'tesseract.js';
 import { useEffect } from 'react';
 

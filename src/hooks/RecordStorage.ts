@@ -5,6 +5,7 @@ import _ from 'lodash';
 import { nanoid } from 'nanoid';
 import { PurchaseList } from "../typings/Interface";
 import StorageContext from "../contexts/StorageContext";
+import { BookKeepingStorage } from '../hooks/BookKeepingStorage';
 
 const RECORD_KEY = 'purchase-records';
 
@@ -12,6 +13,7 @@ export function RecordStorage() {
     const [store, setStore] = useState<Storage>();
     const [list, setList] = useState<PurchaseList[]>([]);
     const storageContext = useContext(StorageContext);
+    const { createBKList } = BookKeepingStorage();
     useEffect(() => {
         const initStorage = async () => {
             const storage = new Storage({
@@ -39,8 +41,9 @@ export function RecordStorage() {
                 }
             })
         }
+        const id = nanoid();
         const newList = {
-            id: nanoid(),
+            id: id,
             date: date,
             type: type,
             content: content,
@@ -50,6 +53,7 @@ export function RecordStorage() {
         setList(updatedList);
         storageContext.dispatch({ type: 'setList', payload: updatedList });
         store?.set(RECORD_KEY, updatedList);
+        await createBKList(storageContext.state.tempBookKeeping, id);
     }
 
     const updateContent = async (id: string, content: { description: string, price: number }[], type: string, date: string) => {
@@ -90,11 +94,18 @@ export function RecordStorage() {
         store?.set(RECORD_KEY, newList);
     }
 
+    const replaceList = async (content: PurchaseList[]) => {
+        setList(content);
+        storageContext.dispatch({ type: 'setList', payload: content });
+        store?.set(RECORD_KEY, content);
+    }
+
     return {
         list,
         createPurchaseList,
         deleteContent,
         updateContent,
-        deleteRecord
+        deleteRecord,
+        replaceList
     }
 }

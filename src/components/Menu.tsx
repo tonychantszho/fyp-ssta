@@ -8,7 +8,7 @@ import {
 } from '@ionic/react';
 
 import { useLocation } from 'react-router-dom';
-import { mailOutline, mailSharp, warningOutline, warningSharp } from 'ionicons/icons';
+import { homeOutline, syncOutline } from 'ionicons/icons';
 import './Menu.css';
 import StorageContext from '../contexts/StorageContext';
 import { useContext } from 'react';
@@ -24,8 +24,8 @@ const appPages: AppPage[] = [
   {
     title: 'Home Page',
     url: '/page/HomePage',
-    iosIcon: mailOutline,
-    mdIcon: mailSharp
+    iosIcon: homeOutline,
+    mdIcon: homeOutline
   },
   // {
   //   title: 'Insert Record',
@@ -58,10 +58,10 @@ const appPages: AppPage[] = [
   //   mdIcon: trashSharp
   // },
   {
-    title: 'recommended product',
-    url: '/page/RecommendedItem',
-    iosIcon: warningOutline,
-    mdIcon: warningSharp
+    title: 'Synchronization',
+    url: '/page/Synchronization',
+    iosIcon: syncOutline,
+    mdIcon: syncOutline
   }
 ];
 

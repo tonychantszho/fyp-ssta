@@ -3,10 +3,10 @@ import { StorageInterface, initialState, Action } from "./StorageContext";
 
 export function stroageReducer(state: StorageInterface, action: Action) {
     switch (action.type) {
-        case 'increase': //login with user info
+        case 'setTempTotal':
             return {
                 ...state,
-                totalAmount: action.payload
+                tempNewRecordTotal: action.payload
             }
         case 'setList':
             return {
@@ -28,6 +28,16 @@ export function stroageReducer(state: StorageInterface, action: Action) {
             return {
                 ...state,
                 shoppingCart: action.payload,
+            }
+        case 'setBookKeeping':
+            return {
+                ...state,
+                bookKeeping: action.payload,
+            }
+        case 'setTempBookKeeping':
+            return {
+                ...state,
+                tempBookKeeping: action.payload,
             }
         case 'init':
             return initialState;

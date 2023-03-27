@@ -7,7 +7,8 @@ import InsertRecord from './pages/InsertRecord';
 import SearchPrice from './pages/SearchPrice';
 import RecordList from './pages/RecordList';
 import CrossCart from './pages/ShoppingCart';
-import RecommendedItem from './pages/RecommendedItem';
+import Synchronization from './pages/Synchronization';
+import BookKeeping from './pages/BookKeeping';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -60,8 +61,11 @@ const App: React.FC = () => {
             <Route path="/page/ShoppingCart" exact={true}>
               <CrossCart />
             </Route>
-            <Route path="/page/RecommendedItem" exact={true}>
-              <RecommendedItem />
+            <Route path="/page/Synchronization" exact={true}>
+              <Synchronization />
+            </Route>
+            <Route path="/page/BookKeeping" exact={true}>
+              <BookKeeping />
             </Route>
           </IonRouterOutlet>
         </IonSplitPane>

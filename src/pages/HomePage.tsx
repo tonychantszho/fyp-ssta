@@ -1,28 +1,61 @@
 import { IonPage } from '@ionic/react';
-import Seed from '../image/seed.png';
 import Background from "../image/bg.jpg";
-import { useContext, useEffect } from 'react';
-// import { nanoid } from 'nanoid';
-// import _ from 'lodash';
+import { useContext, useEffect, useState } from 'react';
 import StorageContext from '../contexts/StorageContext';
-import { RecordStorage } from '../hooks/RecordStorage';
+import { StateChecker } from '../components/StateChecker';
+import _ from 'lodash';
 
 const HomePage: React.FC = () => {
-    const { list } = RecordStorage();
+    let seed: string = "";
+    const storageContext = useContext(StorageContext);
+    const [allTotal, setAllTotal] = useState<number>(0);
+    const [curMonthTotal, setCurMonthTotal] = useState<number>(0);
     useEffect(() => {
+        const calculateTotal = (type: string) => {
+            const result = storageContext.state.list.reduce((acc, cur) => {
+                if (type == "total" || new Date(cur.date).getMonth() === new Date().getMonth()) {
+                    return acc + cur.total;
+                }
+                return acc;
+            }, 0);
+            console.log(result);
+            return result;
+        }
+        setAllTotal(calculateTotal("total"));
+        setCurMonthTotal(calculateTotal("cur"));
+    }, [storageContext.state.list]);
 
-    }, [list]);
+    const checkState = () => {
+        let recordedDay: string[] = [];
+        storageContext.state.list.map((item) => {
+            if (new Date(item.date).getMonth() === new Date().getMonth()) {
+                recordedDay.push(item.date);
+            }
+        });
+        recordedDay = _.uniq(recordedDay);
+        console.log(recordedDay.length);
+        seed = StateChecker(recordedDay.length);
 
-    const PropertyViewer = (total: number, style: string) => {
-        const storageContext = useContext(StorageContext);
-        if (storageContext.state.totalAmount < 0) {
-            style = style + " text-red-500";
+    }
+    checkState();
+    const PropertyViewer = (type: string) => {
+        let style = "";
+        let total = 0;
+        if (type === "total") {
+            style = style + " text-white ml-4 ";
+            total = allTotal;
         } else {
-            style = style + " text-green-400";
+            style = style + " mx-auto right-0 mr-4";
+            total = curMonthTotal;
+            if (total < 0) {
+                style = style + " text-red-500";
+            } else {
+                style = style + " text-green-400";
+            }
         }
         return (
             <div className={`${style} absolute font-digital bg-black/30 mt-4 px-3 pb-2 pt-1 tracking-wide rounded-xl text-3xl leading-none`} >
-                ${storageContext.state.totalAmount}
+                ${total}
             </div >
         );
     };
@@ -32,11 +65,10 @@ const HomePage: React.FC = () => {
                 className="relative h-[calc(100%_-_3rem)] bg-[length:100%_100%]"
                 style={{ backgroundImage: `url(${Background})` }}
             >
-                {PropertyViewer(0, "text-white ml-4 ")}
-                {PropertyViewer(330000.3, "mx-auto right-0 mr-4")}
-                <img className="absolute h-[200px] mx-auto left-0 right-0 bottom-[5%]" src={Seed} alt="background" />
+                {PropertyViewer("total")}
+                {PropertyViewer("cur")}
+                <img className="absolute h-[480px] mx-auto left-0 right-0 bottom-[5%] p-2" src={seed} alt="background" />
             </div>
-
         </IonPage>
     );
 };

@@ -1,4 +1,4 @@
-import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCol, IonContent, IonGrid, IonHeader, IonInput, IonItem, IonItemOption, IonItemOptions, IonItemSliding, IonList, IonPage, IonRow, IonSearchbar, IonSlide, IonSlides, IonSpinner, IonTitle, IonToolbar } from '@ionic/react';
+import { IonButton, IonButtons, IonCard, IonCardContent, IonCardSubtitle, IonCardTitle, IonCol, IonContent, IonGrid, IonHeader, IonInput, IonItem, IonItemOption, IonItemOptions, IonItemSliding, IonList, IonPage, IonRow, IonSearchbar, IonSpinner, IonTitle, IonToolbar } from '@ionic/react';
 import { trashBin } from 'ionicons/icons';
 import axios from 'axios';
 import StorageContext from '../contexts/StorageContext';
@@ -13,8 +13,6 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
-
-
 
 const SearchPrice: React.FC = () => {
   const storageContext = useContext(StorageContext);
@@ -110,14 +108,14 @@ const SearchPrice: React.FC = () => {
 
   const filterLowest = () => {
     setIgnoreWord("");
-    if (lowestResult.length == 0) return;
+    if (lowestResult.length === 0) return;
     let newIgnore = ignore;
     checker:
     for (let i = 0; i < priceResult.length; i++) {
       let isIgnored = false;
       if (newIgnore.length === 0) {
         setLowestResult([priceResult[i]]);
-        break checker;
+        break;
       }
       for (let k = 0; k < newIgnore.length; k++) {
         if (priceResult[i].productNames.toUpperCase().includes(newIgnore[k].toUpperCase())) {
@@ -146,7 +144,7 @@ const SearchPrice: React.FC = () => {
               </IonButton>
             </IonItem>
           </IonButtons>
-          <IonTitle className='bg-lime-300 w-screen absolute top-0 h-14'>Search Prodhct Price</IonTitle>
+          <IonTitle className='bg-lime-300 absolute my-auto top-0 bottom-0 left-0 right-0 text-center'>Search Prodhct Price</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>

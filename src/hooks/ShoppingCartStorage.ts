@@ -14,7 +14,7 @@ export function ShoppingCartStorage() {
     useEffect(() => {
         const initStorage = async () => {
             const storage = new Storage({
-                name: 'sstadb2',
+                name: 'sstadb',
                 driverOrder: [CordovaSQLiteDriver._driver, Drivers.IndexedDB, Drivers.LocalStorage]
             }
             );
@@ -56,10 +56,18 @@ export function ShoppingCartStorage() {
         store?.set(RECORD_KEY, shoppingCart);
     }
 
+    const replaceRecord = async (content: ShoppingCart[]) => {
+        console.log("content = ");
+        setShoppingCartList(content);
+        storageContext.dispatch({ type: 'setShoppingCart', payload: content });
+        store?.set(RECORD_KEY, content);
+    }
+
     return {
         shoppingCartList,
         createShoppingCart,
         deleteRecord,
-        deleteTargetRecord
+        deleteTargetRecord,
+        replaceRecord
     }
 }

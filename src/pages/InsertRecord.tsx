@@ -2,13 +2,14 @@ import { IonButtons, IonButton, IonContent, IonHeader, IonInput, IonList, IonPag
 import { useContext, useRef, useEffect, useState } from 'react';
 import { DocumentScanner, ResponseType } from 'capacitor-document-scanner'
 import { RecordStorage } from '../hooks/RecordStorage';
-// import { nanoid } from 'nanoid';
 import axios from 'axios';
 import FormData from 'form-data';
 import { closeCircle } from 'ionicons/icons';
 import _ from 'lodash';
 import StorageContext from '../contexts/StorageContext';
 import { PurchaseList, PurchaseItem } from '../typings/Interface';
+import { useHistory } from 'react-router';
+import { AlertMsg } from '../components/AlertMsg';
 
 const InsertRecord: React.FC = () => {
 
@@ -31,6 +32,7 @@ const InsertRecord: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [titleText, setTitleText] = useState('Insert Record');
   const [loading, setLoading] = useState(false);
+  const history = useHistory();
 
   useEffect(() => {
     const contentsss: PurchaseItem[] = [];
@@ -143,6 +145,10 @@ const InsertRecord: React.FC = () => {
       selectRef.current.value = null;
     }
     setSelectedType('');
+    const result = await AlertMsg(presentAlert, 'Success', 'Record created successfully', ['Home', 'Next']);
+    if (result === 'Home') {
+      history.push('../page/HomePage');
+    }
   };
 
   const updateList = async () => {
@@ -248,21 +254,23 @@ const InsertRecord: React.FC = () => {
               </IonButton>
             </IonItem>
           </IonButtons>
-          <IonTitle className='bg-lime-300 w-screen absolute top-0 h-14'>{titleText}</IonTitle>
+          <IonTitle className='bg-lime-300 absolute my-auto top-0 bottom-0 left-0 right-0 text-center'>{titleText}</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent>
         <div className='flex h-14 border-b border-gray-300 m-2'>
-          <IonItem className=' w-2/5 h-full' lines='none'>
-            {/* <IonLabel position="stacked" className='w-1/2'>Purchase type:</IonLabel> */}
-            <IonSelect selectedText={undefined} ref={selectRef} interface="popover" placeholder="Type" onIonChange={(e) => { setSelectedType(e.detail.value); }}>
-              <IonSelectOption value="Income">Income</IonSelectOption>
-              <IonSelectOption value="Shopping">Shopping</IonSelectOption>
-              <IonSelectOption value="Diet">Diet</IonSelectOption>
-            </IonSelect>
-          </IonItem>
+          <IonList className=' w-2/5 h-full'>
+            <IonItem lines='none'>
+              {/* <IonLabel position="stacked" className='w-1/2'>Purchase type:</IonLabel> */}
+              <IonSelect selectedText={undefined} ref={selectRef} interface="popover" placeholder="Type" onIonChange={(e) => { setSelectedType(e.detail.value); }}>
+                <IonSelectOption value="Income">Income</IonSelectOption>
+                <IonSelectOption value="Shopping">Shopping</IonSelectOption>
+                <IonSelectOption value="Diet">Diet</IonSelectOption>
+              </IonSelect>
+            </IonItem>
+          </IonList>
           <div className='w-1/6 h-full ml-4' onClick={openCalendar}>
-            <svg className='w-full' onClick={openCalendar} xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 -2 24 24"><path onClick={openCalendar} d="M21 20V6c0-1.103-.897-2-2-2h-2V2h-2v2H9V2H7v2H5c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2h14c1.103 0 2-.897 2-2zM9 18H7v-2h2v2zm0-4H7v-2h2v2zm4 4h-2v-2h2v2zm0-4h-2v-2h2v2zm4 4h-2v-2h2v2zm0-4h-2v-2h2v2zm2-5H5V7h14v2z"></path></svg>
+            <svg className='w-full' xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 -2 24 24"><path onClick={openCalendar} d="M21 20V6c0-1.103-.897-2-2-2h-2V2h-2v2H9V2H7v2H5c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2h14c1.103 0 2-.897 2-2zM9 18H7v-2h2v2zm0-4H7v-2h2v2zm4 4h-2v-2h2v2zm0-4h-2v-2h2v2zm4 4h-2v-2h2v2zm0-4h-2v-2h2v2zm2-5H5V7h14v2z"></path></svg>
           </div>
           <div className='w-1/6 h-full ml-4'>
             {!isPlatform("capacitor") ?
@@ -310,21 +318,34 @@ const InsertRecord: React.FC = () => {
               <IonGrid>
                 {printInputLines()}
               </IonGrid>
-              <IonButton onClick={() => {
-                setCounter(counter + 1);
-                setCurrentItem(currentItem => [...currentItem, { description: '', price: 0 }]);
-                if (bottomRef.current) {
-                  setTimeout(() => {
-                    //console.log(bottomRef.current!.scrollTop.toString());
-                    // console.log(bottomRef.current!.scrollHeight);
-                    bottomRef.current!.scrollIntoView({ block: "end" });
-                  }, 100);
-                }
-              }} expand="block">add new item</IonButton>
-              <IonButton ref={bottomRef} type="submit"
-                //onClick={() => createList()}
-                expand="block">submit</IonButton>
-
+              <IonGrid >
+                <IonRow class="ion-justify-content-center">
+                  <IonCol size='4'>
+                    <IonButton expand="block" onClick={() => {
+                      storageContext.dispatch({ type: 'setTempTotal', payload: _.sumBy(currentItem, 'price') });
+                      history.push(`/page/BookKeeping`);
+                    }}>A/R</IonButton>
+                  </IonCol>
+                  <IonCol size='4'>
+                    <IonButton onClick={() => {
+                      setCounter(counter + 1);
+                      setCurrentItem(currentItem => [...currentItem, { description: '', price: 0 }]);
+                      if (bottomRef.current) {
+                        setTimeout(() => {
+                          //console.log(bottomRef.current!.scrollTop.toString());
+                          // console.log(bottomRef.current!.scrollHeight);
+                          bottomRef.current!.scrollIntoView({ block: "end" });
+                        }, 100);
+                      }
+                    }} expand="block">Add item</IonButton>
+                  </IonCol>
+                  <IonCol size='4'>
+                    <IonButton ref={bottomRef} type="submit" color="primary"
+                      //onClick={() => createList()}
+                      expand="block">Submit</IonButton>
+                  </IonCol>
+                </IonRow>
+              </IonGrid>
             </IonList>
           </div>
         </form>

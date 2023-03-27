@@ -1,4 +1,4 @@
-import { IonButton, IonButtons, IonCol, IonContent, IonGrid, IonHeader, IonInput, IonItem, IonItemOption, IonItemOptions, IonItemSliding, IonLabel, IonPage, IonRow, IonSpinner, IonTitle, IonToolbar } from '@ionic/react';
+import { IonButton, IonButtons, IonCol, IonContent, IonGrid, IonHeader, IonInput, IonItem, IonItemOption, IonItemOptions, IonItemSliding, IonLabel, IonPage, IonRow, IonSpinner, IonTitle, IonToolbar, useIonAlert } from '@ionic/react';
 import axios from 'axios';
 import { nanoid } from 'nanoid';
 import { useState, useContext } from 'react';
@@ -20,6 +20,7 @@ const CrossCart: React.FC = () => {
     const [product, setProduct] = useState<string>("");
     const [price, setPrice] = useState<number>(0);
     const [address, setAddress] = useState<string>("");
+    const [presentAlert] = useIonAlert();
 
     const handleManualInput = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -73,6 +74,18 @@ const CrossCart: React.FC = () => {
                 const record = { description: shoppingCartList[i].product, price: shoppingCartList[i].price }
                 newRecord.push(record);
             }
+        }
+        if (checked.length === 0) {
+            presentAlert({
+                header: 'unexpected error',
+                message: 'Please select at least one item',
+                buttons: [
+                    {
+                        text: 'OK'
+                    }
+                ]
+            });
+            return;
         }
         checked.sort((a, b) => b - a);
         console.log("index = ", checked);
@@ -198,7 +211,7 @@ const CrossCart: React.FC = () => {
                             </IonButton>
                         </IonItem>
                     </IonButtons>
-                    <IonTitle className='bg-lime-300 w-screen absolute top-0 h-14'>Shopping List</IonTitle>
+                    <IonTitle className='bg-lime-300 absolute my-auto top-0 bottom-0 left-0 right-0 text-center'>Shopping List</IonTitle>
                 </IonToolbar>
             </IonHeader>
             <IonContent fullscreen>
