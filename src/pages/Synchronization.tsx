@@ -1,4 +1,4 @@
-import { IonButton, IonButtons, IonCol, IonContent, IonGrid, IonHeader, IonInput, IonItem, IonLabel, IonMenuButton, IonPage, IonRow, IonTitle, IonToolbar, useIonAlert } from '@ionic/react';
+import { IonButton, IonButtons, IonCol, IonContent, IonGrid, IonHeader, IonInput, IonItem, IonLabel, IonPage, IonRow, IonTitle, IonToolbar, useIonAlert } from '@ionic/react';
 import CryptoJS from 'crypto-js';
 import StorageContext from '../contexts/StorageContext';
 import { useContext, useState } from 'react';
@@ -6,10 +6,10 @@ import { ShoppingCartStorage } from '../hooks/ShoppingCartStorage';
 import { PurchaseList, ShoppingCart } from '../typings/Interface';
 import axios from 'axios';
 import { RecordStorage } from '../hooks/RecordStorage';
+import { NotificationStorage } from '../hooks/NotificationStorage';
 import copy from 'copy-to-clipboard';
-import { Plugins } from '@capacitor/core';
 import { AlertMsg } from '../components/AlertMsg';
-const { LocalNotifications } = Plugins;
+
 
 const Synchronization: React.FC = () => {
     const storageContext = useContext(StorageContext);
@@ -18,6 +18,7 @@ const Synchronization: React.FC = () => {
     const [decryptKey, setDecryptKey] = useState<string>("");
     const [presentAlert] = useIonAlert();
     const { shoppingCartList, replaceRecord } = ShoppingCartStorage();
+    const { notification, replaceNotification } = NotificationStorage();
     const { replaceList } = RecordStorage();
     const encryption = async () => {
         let newId = "";
@@ -83,68 +84,16 @@ const Synchronization: React.FC = () => {
     }
 
     const testNotice = async () => {
-        const notifs = await LocalNotifications.schedule({
-            notifications: [
-                {
-                    title: 'hello',
-                    body: 'Body',
-                    id: 1,
-                    schedule: {
-                        at: new Date(Date.now() + 1000),
-                        repeats: true,
-                        every: "minute"
-                    },
-                    smallIcon: 'res://ic_stat_onesignal_default',
-                    attachments: null,
-                    actionTypeId: '',
-                    extra: null,
-                    allowWhileIdle: true
-                },
-            ],
-        });
-        console.log('scheduled notifications', notifs);
-    }
-
-    const testNotice2 = async () => {
-        const notifs = await LocalNotifications.schedule({
-            notifications: [
-                {
-                    title: 'hello',
-                    body: 'Body222',
-                    id: 12,
-                    schedule: {
-                        at: new Date(Date.now() + 1000),
-                        repeats: true,
-                        every: "minute"
-                    },
-                    smallIcon: 'res://ic_stat_onesignal_default',
-                    attachments: null,
-                    actionTypeId: '',
-                    extra: null,
-                    allowWhileIdle: true
-                },
-            ],
-        });
-        console.log('scheduled notifications', notifs);
+        await replaceNotification([]);
+        console.log("did I delete it?");
     }
 
     const checkNotice = async () => {
-        const notifs = await LocalNotifications.getPending();
-        console.log('check notifications', notifs);
-        const notifs2 = await LocalNotifications.listChannels();
-        console.log('check notifications2', notifs2);
+        const noti = notification;
+        console.log(noti);
+        console.log(storageContext.state.notifications);
     }
 
-    const cancelNotice = async () => {
-        const notifs = await LocalNotifications.cancel({
-            notifications: [
-                {
-                    id: 12
-                }
-            ]
-        });
-        console.log('cancel notifications', notifs);
-    }
 
     return (
         <IonPage>
@@ -209,16 +158,13 @@ const Synchronization: React.FC = () => {
                     </IonRow>
                     <IonRow>
                         <IonCol size='3'>
-                            <IonButton expand="block" onClick={() => { testNotice() }}>Test Notice</IonButton>
+                            <IonButton expand="block" onClick={() => { testNotice() }}>Remove</IonButton>
                         </IonCol>
                         <IonCol size='3'>
-                            <IonButton expand="block" onClick={() => { checkNotice() }}>Check Notice</IonButton>
+                            <IonButton expand="block" onClick={() => { checkNotice() }}>Check</IonButton>
                         </IonCol>
                         <IonCol size='3'>
-                            <IonButton expand="block" onClick={() => { testNotice2() }}>Test Notice</IonButton>
-                        </IonCol>
-                        <IonCol size='3'>
-                            <IonButton expand="block" onClick={() => { cancelNotice() }}>Cancel Notice</IonButton>
+                            <IonButton expand="block" onClick={() => { window.location.reload(); }}>refresh</IonButton>
                         </IonCol>
                     </IonRow>
                 </IonGrid>

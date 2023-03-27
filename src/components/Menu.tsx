@@ -8,7 +8,7 @@ import {
 } from '@ionic/react';
 
 import { useLocation } from 'react-router-dom';
-import { homeOutline, syncOutline } from 'ionicons/icons';
+import { home, syncOutline, newspaper } from 'ionicons/icons';
 import './Menu.css';
 import StorageContext from '../contexts/StorageContext';
 import { useContext } from 'react';
@@ -24,15 +24,15 @@ const appPages: AppPage[] = [
   {
     title: 'Home Page',
     url: '/page/HomePage',
-    iosIcon: homeOutline,
-    mdIcon: homeOutline
+    iosIcon: home,
+    mdIcon: home
   },
-  // {
-  //   title: 'Insert Record',
-  //   url: '/page/InsertRecord',
-  //   iosIcon: mailOutline,
-  //   mdIcon: mailSharp
-  // },
+  {
+    title: 'Accounts Receivable',
+    url: '/page/AccountReceivable',
+    iosIcon: newspaper,
+    mdIcon: newspaper
+  },
   // {
   //   title: 'Scan Receipt',
   //   url: '/page/ScanImage',
@@ -51,12 +51,12 @@ const appPages: AppPage[] = [
   //   iosIcon: archiveOutline,
   //   mdIcon: archiveSharp
   // },
-  // {
-  //   title: 'Shopping Cart',
-  //   url: '/page/ShoppingCart',
-  //   iosIcon: trashOutline,
-  //   mdIcon: trashSharp
-  // },
+  {
+    title: 'Test Page',
+    url: '/page/TestCam',
+    iosIcon: syncOutline,
+    mdIcon: syncOutline
+  },
   {
     title: 'Synchronization',
     url: '/page/Synchronization',
@@ -79,7 +79,7 @@ const Menu: React.FC = () => {
         {appPages.map((appPage, index) => {
           return (
             <IonMenuToggle key={index} autoHide={false}>
-              <IonItem className={location.pathname === appPage.url ? 'selected' : ''} routerLink={appPage.url} routerDirection="none" lines="none" detail={false} color="transparent" onClick={handleClick}>
+              <IonItem className={location.pathname === appPage.url ? 'selected' : ''} routerLink={appPage.url} routerDirection="forward" lines="none" detail={false} color="transparent" onClick={handleClick}>
                 <IonIcon slot="start" ios={appPage.iosIcon} md={appPage.mdIcon} />
                 <IonLabel>{appPage.title}</IonLabel>
               </IonItem>

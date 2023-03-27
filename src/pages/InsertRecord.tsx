@@ -50,6 +50,7 @@ const InsertRecord: React.FC = () => {
       }
       setSelectedType(target.type);
       setSelectedDate(new Date(target.date));
+      console.log(target.date);
     } else {
       setCounter(1);
       setTitleText('Insert Record');
@@ -152,17 +153,20 @@ const InsertRecord: React.FC = () => {
   };
 
   const updateList = async () => {
-    await updateContent(storageContext.state.selectedRecord.id, currentItem, selectedType, selectedDate.toISOString().split('T')[0]);
-    presentAlert({
-      message: 'Success',
-      buttons: [
-        'OK'
-      ]
-    });
+    const date = selectedDate.getFullYear() + '-' + (selectedDate.getMonth() + 1) + '-' + selectedDate.getDate();
+    await updateContent(storageContext.state.selectedRecord.id, currentItem, selectedType, date);
+    const result = await AlertMsg(presentAlert, 'Success', 'Record updated successfully', ['Home', 'Record']);
+    if (result === 'Home') {
+      history.push('../page/HomePage');
+    } else {
+      history.push('../page/RecordList');
+    }
   };
 
   const handleDateChange = (event: CustomEvent) => {
     // setSelectedDate(event.detail.value);
+    console.log(event.detail.value);
+    openCalendar();
     const date: Date = new Date(event.detail.value!);
     setSelectedDate(date);
   };
@@ -170,17 +174,20 @@ const InsertRecord: React.FC = () => {
   const openCalendar = () => {
     const calendar = document.getElementById('calendar') as HTMLIonDatetimeElement;
     calendar.classList.toggle('hidden');
+    console.log(calendar);
   };
 
   //Scan receipt
   const scanDocument = async () => {
     // start the document scanner
+    console.log("scan");
     const { scannedImages } = await DocumentScanner.scanDocument(
       {
         responseType: ResponseType.Base64
       }
     )
-    imageToText(scannedImages);
+    console.log("scannedImages", scannedImages);
+    // imageToText(scannedImages);
   }
 
   const imageToText = async (image: any) => {
@@ -270,7 +277,7 @@ const InsertRecord: React.FC = () => {
             </IonItem>
           </IonList>
           <div className='w-1/6 h-full ml-4' onClick={openCalendar}>
-            <svg className='w-full' xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 -2 24 24"><path onClick={openCalendar} d="M21 20V6c0-1.103-.897-2-2-2h-2V2h-2v2H9V2H7v2H5c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2h14c1.103 0 2-.897 2-2zM9 18H7v-2h2v2zm0-4H7v-2h2v2zm4 4h-2v-2h2v2zm0-4h-2v-2h2v2zm4 4h-2v-2h2v2zm0-4h-2v-2h2v2zm2-5H5V7h14v2z"></path></svg>
+            <svg className='w-full' xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 -2 24 24"><path d="M21 20V6c0-1.103-.897-2-2-2h-2V2h-2v2H9V2H7v2H5c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2h14c1.103 0 2-.897 2-2zM9 18H7v-2h2v2zm0-4H7v-2h2v2zm4 4h-2v-2h2v2zm0-4h-2v-2h2v2zm4 4h-2v-2h2v2zm0-4h-2v-2h2v2zm2-5H5V7h14v2z"></path></svg>
           </div>
           <div className='w-1/6 h-full ml-4'>
             {!isPlatform("capacitor") ?
@@ -310,8 +317,10 @@ const InsertRecord: React.FC = () => {
             }
           </div>
         </div>
-
-        <IonDatetime id="calendar" className='absolute z-50 right-0 left-0 m-auto transition-all hidden' presentation="date" locale="en-GB" color="brown" onIonChange={handleDateChange} />
+        <IonDatetime id="calendar" className='absolute top-14 z-50 right-0 left-0 m-auto transition-all hidden mt-12' presentation="date" locale="en-GB" color="brown" onIonChange={handleDateChange} />
+        {/* <div id="calendar" className='absolute z-50 m-auto transition-all hidden w-full h-full'>
+          <IonDatetime className='w-full h-32' presentation="date" locale="en-GB" color="brown" onIonChange={handleDateChange} />
+        </div> */}
         <form onSubmit={handleSubmit} className='h-[calc(100%_-_11rem)] overflow-y-auto'>
           <div>
             <IonList>
@@ -348,6 +357,31 @@ const InsertRecord: React.FC = () => {
               </IonGrid>
             </IonList>
           </div>
+          <IonGrid className='justify-center items-center text-center w-full absolute bottom-7'>
+            <IonRow>
+              <IonCol size="4"
+              // onClick={() => { setShowChart(!showChart) }}
+              >
+                <IonList className='w-full'>
+                  <IonItem lines='none'>
+                    <IonSelect selectedText={undefined} ref={selectRef} interface="popover" placeholder="Type" onIonChange={(e) => { setSelectedType(e.detail.value); }}>
+                      <IonSelectOption value="Income">Income</IonSelectOption>
+                      <IonSelectOption value="Shopping">Shopping</IonSelectOption>
+                      <IonSelectOption value="Diet">Diet</IonSelectOption>
+                    </IonSelect>
+                  </IonItem>
+                </IonList>
+              </IonCol>
+              <IonCol size="2" offset='4' onClick={openCalendar} >
+                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24"><path d="M21 20V6c0-1.103-.897-2-2-2h-2V2h-2v2H9V2H7v2H5c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2h14c1.103 0 2-.897 2-2zM9 18H7v-2h2v2zm0-4H7v-2h2v2zm4 4h-2v-2h2v2zm0-4h-2v-2h2v2zm4 4h-2v-2h2v2zm0-4h-2v-2h2v2zm2-5H5V7h14v2z"></path></svg>
+              </IonCol>
+              <IonCol size="2" onClick={() => { scanDocument() }}
+              // onClick={() => { setFliter(false); setSelectedList(''); setSelectedDate(new Date()) }}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 -2 24 24"><path d="M3 4v5h2V5h4V3H4a1 1 0 0 0-1 1zm18 5V4a1 1 0 0 0-1-1h-5v2h4v4h2zm-2 10h-4v2h5a1 1 0 0 0 1-1v-5h-2v4zM9 21v-2H5v-4H3v5a1 1 0 0 0 1 1h5zM2 11h20v2H2z"></path></svg>
+              </IonCol>
+            </IonRow>
+          </IonGrid>
         </form>
       </IonContent>
     </IonPage >

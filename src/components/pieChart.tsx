@@ -19,6 +19,8 @@ const PieeChart: React.FC<Props> = ({ month }) => {
     pieColor.Shopping = '#5bb5b2';
     pieColor.Income = '#C13C37';
     pieColor.Diet = '#6A2135';
+    pieColor.Loan = '#D03030';
+    pieColor.Revoke = '#5B0005';
     const monthNames = ["January", "February", "March", "April", "May", "June",
         "July", "August", "September", "October", "November", "December"
     ];
@@ -35,10 +37,17 @@ const PieeChart: React.FC<Props> = ({ month }) => {
                 listData.push(data);
             }
         });
+        storageContext.state.bookKeeping.map((item) => {
+            if (new Date(item.date).getMonth() === month.getMonth()) {
+                const data = {
+                    title: "Loan",
+                    value: item.price,
+                    color: "",
+                };
+                listData.push(data);
+            }
+        });
         const result = _.chain(listData).groupBy("title").map((value, key: string) => ({ title: key, value: Math.abs(_.sumBy(value, "value")), color: pieColor[key] })).value();
-        // for (let i = 0; i < result.length; i++) {
-        //     result[i].color = pieColor[i];
-        // }
         console.log(result);
 
         pieData = result;
@@ -52,7 +61,7 @@ const PieeChart: React.FC<Props> = ({ month }) => {
             <PieChart
                 data={pieData}
                 lineWidth={40}
-                paddingAngle={5}
+                paddingAngle={15}
                 startAngle={40}
                 segmentsStyle={{ transition: 'stroke .3s', cursor: 'pointer' }}
                 center={[90, 0]}
@@ -79,8 +88,8 @@ const PieeChart: React.FC<Props> = ({ month }) => {
                             fontSize: '7px',
                             pointerEvents: 'none',
                         }}>
-                        <tspan x={x} y={y - 5} dx={dx} dy={dy} style={{ fill: pieColor[dataEntry.title] }}>{dataEntry.title}</tspan>
-                        <tspan className=' text-xs' x={x} y={y + 8} dx={dx} dy={dy}>{dataEntry.value}</tspan>
+                        <tspan x={x} y={y - 7} dx={dx} dy={dy} style={{ fill: pieColor[dataEntry.title] }}>{dataEntry.title}</tspan>
+                        <tspan className=' text-xs' x={x} y={y + 5} dx={dx} dy={dy}>${dataEntry.value}</tspan>
                     </text>
                 )}
                 labelPosition={135}

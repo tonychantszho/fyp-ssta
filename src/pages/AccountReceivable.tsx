@@ -1,229 +1,176 @@
-import { IonButton, IonButtons, IonCol, IonContent, IonGrid, IonHeader, IonInput, IonItem, IonLabel, IonMenuButton, IonPage, IonRow, IonTitle, IonToolbar, useIonAlert } from '@ionic/react';
-import CryptoJS from 'crypto-js';
-import StorageContext from '../contexts/StorageContext';
+import { IonButton, IonButtons, IonCol, IonContent, IonGrid, IonHeader, IonItem, IonLabel, IonPage, IonRow, IonTitle, IonToolbar, useIonAlert } from '@ionic/react';
+import { nanoid } from 'nanoid';
 import { useContext, useState } from 'react';
-import { ShoppingCartStorage } from '../hooks/ShoppingCartStorage';
-import { PurchaseList, ShoppingCart } from '../typings/Interface';
-import axios from 'axios';
 import { RecordStorage } from '../hooks/RecordStorage';
-import copy from 'copy-to-clipboard';
-import { Plugins } from '@capacitor/core';
+import _ from 'lodash';
+import StorageContext from '../contexts/StorageContext';
+import { useHistory } from 'react-router-dom';
+import { BKeeping, Data } from '../typings/Interface';
+import { BookKeepingStorage } from '../hooks/BookKeepingStorage';
 import { AlertMsg } from '../components/AlertMsg';
-const { LocalNotifications, CancelOptions } = Plugins;
 
 const AccountReceivable: React.FC = () => {
+    const history = useHistory();
     const storageContext = useContext(StorageContext);
-    const [secretId, setSecretId] = useState<string>("");
-    const [encryptKey, setEncryptKey] = useState<string>("");
-    const [decryptKey, setDecryptKey] = useState<string>("");
+    const { createPurchaseList } = RecordStorage();
+    const { deleteBKList, bookKeepingList } = BookKeepingStorage();
+    const [fliter, setFliter] = useState<boolean>(false);
     const [presentAlert] = useIonAlert();
-    const { shoppingCartList, replaceRecord } = ShoppingCartStorage();
-    const { replaceList } = RecordStorage();
-    const encryption = async () => {
-        let newId = "";
-        if (encryptKey === "") {
-            AlertMsg(presentAlert, "Missing value", "Please enter the secretKey", ["OK"]);
-            // alert("Please enter the secretKey");
-            return;
-        }
-        // Encrypt
-        let encryptedList = CryptoJS.AES.encrypt(JSON.stringify(storageContext.state.list), encryptKey).toString();
-        let encryptedCart = CryptoJS.AES.encrypt(JSON.stringify(shoppingCartList), encryptKey).toString();
-        try {
-            const result = await axios.post("http://172.16.184.214:3001/test", { shoppingCart: encryptedCart, list: encryptedList });
-            console.log(result.data.id);
-            newId = result.data.id;
-        } catch (e) {
-            console.log(e);
-        } finally {
-            console.log("finally");
-            const result = await AlertMsg(presentAlert, "genarated ID", "Please save the following ID:" + newId, ["copy", "OK"]);
-            if (result === "copy") {
-                console.log("copy");
-                copy(newId);
+
+
+    const formatedList = (classedList: BKeeping[], key: string) => {
+        return (
+            <div className='w-full mt-4' key={nanoid()}>
+                <IonGrid className='w-full p-0'>
+                    <IonRow className='uppercase font-bold'>
+                        <IonCol size="12">
+                            <IonLabel className='bg-orange-300 text-amber-800 p-1.5 rounded-lg'>{key}</IonLabel>
+                        </IonCol>
+                    </IonRow>
+                    {classedList.map((item, index) =>
+                        <IonRow className='text-center text-lg align-middle mb-2' key={nanoid()}>
+                            <IonCol size='3' offset='1'>
+                                <IonLabel>
+                                    <span className='text-red-600 text-center font-semibold'>${item.price}</span>
+                                </IonLabel>
+                            </IonCol>
+                            <IonCol size='3'>
+                                <IonLabel >
+                                    <IonLabel className='mt-10'>Detail</IonLabel>
+                                </IonLabel>
+                            </IonCol>
+                            <IonCol size='2'>
+                                <IonButton className='-mt-2'
+                                    onClick={() => {
+                                        handleReceive(item);
+                                    }}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="m10 15.586-3.293-3.293-1.414 1.414L10 18.414l9.707-9.707-1.414-1.414z"></path></svg>
+                                </IonButton>
+                            </IonCol>
+                            <IonCol size='2'>
+                                <IonButton className='-mt-2' color="secondary" onClick={() => { handleCallLoan(item) }}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><circle cx="9.5" cy="9.5" r="1.5"></circle><circle cx="14.5" cy="9.5" r="1.5"></circle><path d="M12 2C6.486 2 2 5.589 2 10c0 2.908 1.897 5.515 5 6.934V22l5.34-4.004C17.697 17.852 22 14.32 22 10c0-4.411-4.486-8-10-8zm0 14h-.333L9 18v-2.417l-.641-.247C5.671 14.301 4 12.256 4 10c0-3.309 3.589-6 8-6s8 2.691 8 6-3.589 6-8 6z"></path></svg>
+                                </IonButton>
+                            </IonCol>
+                        </IonRow>
+                    )}
+                </IonGrid>
+            </div>
+        )
+    }
+
+    const classification = () => {
+        const records = storageContext.state.bookKeeping;
+        const groups: Data = _.groupBy(records, 'name');
+        console.log("groups = " + groups);
+        console.log(groups);
+        const uniNames = Object.keys(groups);
+        console.log("UniName = " + uniNames);
+        const result = [] as JSX.Element[];
+        for (let i = 0; i < uniNames.length; i++) {
+            let curName = uniNames[i];
+
+            if (fliter) {
+                if (curName === new Date().getFullYear() + '-' + (new Date().getMonth() + 1) + '-' + new Date().getDate()) {
+                    console.log(curName);
+                    result.push(formatedList(groups[curName], curName));
+                }
+            } else {
+                result.push(formatedList(groups[curName], curName));
             }
         }
+        return result;
     }
 
-    const decryption = async () => {
-        console.log(secretId);
-        console.log(decryptKey);
-        let syncCart = "";
-        let syncList = "";
-        try {
-            const result = await axios.post("http://172.16.184.214:3001/test2", { id: secretId });
-            syncCart = result.data.shoppingCart;
-            syncList = result.data.list;
-        } catch (e) {
-            console.log(e);
-        } finally {
-            console.log("finally");
+    const handleReceive = async (item: BKeeping) => {
+        console.log("item id = " + item.id + " item name = " + item.name + " item price = " + item.price);
+        let result = await AlertMsg(presentAlert, "Confirm", "Are you sure to receive this loan?", ["Confirm", "Cancel"]);
+        if (result === "Confirm") {
+            const date = new Date().getFullYear() + '-' + (new Date().getMonth() + 1) + '-' + new Date().getDate();
+            await createPurchaseList([{ description: "Loan received from " + item.name, price: item.price }], "Revoke", date);
+            await deleteBKList(item.id);
         }
-        // Decrypt
-        let cartBytes = CryptoJS.AES.decrypt(syncCart, decryptKey);
-        let listBytes = CryptoJS.AES.decrypt(syncList, decryptKey);
-        //convert to string
-        let originalCart = "";
-        let originalCartObject: ShoppingCart[] = [];
-        try {
-            originalCart = cartBytes.toString(CryptoJS.enc.Utf8);
-            originalCartObject = JSON.parse(originalCart);
-        } catch (e) {
-            console.log(e);
-            AlertMsg(presentAlert, "Wrong value", "Wrong secretKey,please input again", ["OK"]);
+    }
+
+    const handleCallLoan = async (item: BKeeping) => {
+        let phoneNumber = "";
+        await presentAlert({
+            header: 'Please Enter debtor No.',
+            inputs: [
+                {
+                    name: 'phone',
+                    type: 'number',
+                    placeholder: 'phone number',
+                    attributes: {
+                        maxlength: 8,
+                    },
+                }
+            ],
+            buttons: [{
+                text: 'OK',
+                role: 'confirm',
+                handler: (alertData) => {
+                    console.log(alertData.phone);
+                    phoneNumber = alertData.phone;
+                }
+            },
+            {
+                text: 'Cancel',
+                role: 'cancel',
+                handler: () => {
+                    phoneNumber = "cancel";
+                },
+            }],
+        })
+        while (phoneNumber === "") {
+            await new Promise(r => setTimeout(r, 100));
+        }
+        if (phoneNumber === "cancel") {
             return;
         }
-        replaceRecord(originalCartObject);
-        console.log(originalCartObject); // 'my message'
-        let originallist = listBytes.toString(CryptoJS.enc.Utf8);
-        let originalOListbject: PurchaseList[] = JSON.parse(originallist);
-        replaceList(originalOListbject);
-        console.log(originalOListbject); // 'my message'
-
-    }
-
-    const testNotice = async () => {
-        const notifs = await LocalNotifications.schedule({
-            notifications: [
-                {
-                    title: 'hello',
-                    body: 'Body',
-                    id: 1,
-                    schedule: {
-                        at: new Date(Date.now() + 1000),
-                        repeats: true,
-                        every: "minute"
-                    },
-                    smallIcon: 'res://ic_stat_onesignal_default',
-                    attachments: null,
-                    actionTypeId: '',
-                    extra: null,
-                    allowWhileIdle: true
-                },
-            ],
-        });
-        console.log('scheduled notifications', notifs);
-    }
-
-    const testNotice2 = async () => {
-        const notifs = await LocalNotifications.schedule({
-            notifications: [
-                {
-                    title: 'hello',
-                    body: 'Body222',
-                    id: 12,
-                    schedule: {
-                        at: new Date(Date.now() + 1000),
-                        repeats: true,
-                        every: "minute"
-                    },
-                    smallIcon: 'res://ic_stat_onesignal_default',
-                    attachments: null,
-                    actionTypeId: '',
-                    extra: null,
-                    allowWhileIdle: true
-                },
-            ],
-        });
-        console.log('scheduled notifications', notifs);
-    }
-
-    const checkNotice = async () => {
-        const notifs = await LocalNotifications.getPending();
-        console.log('check notifications', notifs);
-        const notifs2 = await LocalNotifications.listChannels();
-        console.log('check notifications2', notifs2);
-    }
-
-    const cancelNotice = async () => {
-        const notifs = await LocalNotifications.cancel({
-            notifications: [
-                {
-                    id: 12
-                }
-            ]
-        });
-        console.log('cancel notifications', notifs);
+        if (phoneNumber.length !== 8) {
+            AlertMsg(presentAlert, "Error", "Please enter a valid phone number", ["OK"]);
+            return;
+        }
+        const message = "Auto Msg: Dear " + item.name + ", you have a loan of $" + item.price + " from me. Please pay me back as soon as possible. Thank you.";
+        console.log("pp = " + phoneNumber);
+        window.open('https://api.whatsapp.com/send?phone=852' + phoneNumber + '&text=' + message, '_blank');
     }
 
     return (
         <IonPage>
-            <IonHeader>
+            <IonHeader >
                 <IonToolbar>
-                    <IonButtons slot="start">
+                    <IonButtons slot="start" className='bg-lime-300 m-0 p-0 absolute'>
                         <IonItem routerLink='../page/HomePage' routerDirection="back" lines="none" detail={false} color="transparent">
                             <IonButton onClick={() => { storageContext.dispatch({ type: 'unSetSelectedRecord' }); }}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path d="M12.74 2.32a1 1 0 0 0-1.48 0l-9 10A1 1 0 0 0 3 14h2v7a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-7h2a1 1 0 0 0 1-1 1 1 0 0 0-.26-.68z"></path></svg>
                             </IonButton>
                         </IonItem>
                     </IonButtons>
-                    <IonTitle className='bg-lime-300 absolute my-auto top-0 bottom-0 left-0 right-0 text-center'>Synchronization</IonTitle>
+                    <IonTitle className='bg-lime-300 absolute my-auto top-0 bottom-0 left-0 right-0 text-center'>
+                        Accounts Receivable
+                    </IonTitle>
                 </IonToolbar>
             </IonHeader>
-
-            <IonContent fullscreen>
-                <IonGrid>
-                    <IonRow class="ion-justify-content-center text-center font-bold text-2xl">
-                        <IonCol size='6'>
-                            Upload
-                        </IonCol>
-                    </IonRow>
-                    <IonRow>
-                        <IonCol size='12'>
-                            <IonItem lines='none' class="ion-no-padding">
-                                <IonLabel position="fixed" className=' font-semibold'>Secret Key</IonLabel>
-                                <IonInput value={encryptKey} onIonChange={e => setEncryptKey(e.detail.value!)} placeholder="key for encrypt data"></IonInput>
-                            </IonItem>
-                        </IonCol>
-                    </IonRow>
-                    <IonRow class="ion-justify-content-center">
-                        <IonCol size='4'>
-                            <IonButton expand="block" onClick={() => { encryption() }}>Upload</IonButton>
-                        </IonCol>
-                    </IonRow>
-                    <IonRow class="ion-justify-content-center text-center font-bold text-2xl">
-                        <IonCol size='6'>
-                            Download
-                        </IonCol>
-                    </IonRow>
-                    <IonRow>
-                        <IonCol size='12'>
-                            <IonItem lines='none' class="ion-no-padding">
-                                <IonLabel position="fixed" className=' font-semibold'>Secret Id</IonLabel>
-                                <IonInput value={secretId} onIonChange={e => setSecretId(e.detail.value!)} placeholder="ID received when upload"></IonInput>
-                            </IonItem>
-                        </IonCol>
-                    </IonRow>
-                    <IonRow>
-                        <IonCol size='12'>
-                            <IonItem lines='none' class="ion-no-padding">
-                                <IonLabel position="fixed" className=' font-semibold'>Secret Key</IonLabel>
-                                <IonInput value={decryptKey} onIonChange={e => setDecryptKey(e.detail.value!)} placeholder="key for decrypt data"></IonInput>
-                            </IonItem>
-                        </IonCol>
-                    </IonRow>
-                    <IonRow class="ion-justify-content-center">
-                        <IonCol size='4'>
-                            <IonButton expand="block" onClick={() => { decryption() }}>Download</IonButton>
-                        </IonCol>
-                    </IonRow>
-                    <IonRow>
-                        <IonCol size='3'>
-                            <IonButton expand="block" onClick={() => { testNotice() }}>Test Notice</IonButton>
-                        </IonCol>
-                        <IonCol size='3'>
-                            <IonButton expand="block" onClick={() => { checkNotice() }}>Check Notice</IonButton>
-                        </IonCol>
-                        <IonCol size='3'>
-                            <IonButton expand="block" onClick={() => { testNotice2() }}>Test Notice</IonButton>
-                        </IonCol>
-                        <IonCol size='3'>
-                            <IonButton expand="block" onClick={() => { cancelNotice() }}>Cancel Notice</IonButton>
-                        </IonCol>
-                    </IonRow>
-                </IonGrid>
+            <IonContent>
+                <div className='h-[calc(100%_-_6rem)] overflow-y-auto'>
+                    <IonGrid className='text-center w-full mb-3 h-10 uppercase bg-lime-500 text-slate-100 font-semibold'>
+                        <IonRow>
+                            <IonCol size="3" offset='1'>Arrears</IonCol>
+                            <IonCol size="3">Refer</IonCol>
+                            <IonCol size="4">Operation</IonCol>
+                        </IonRow>
+                    </IonGrid>
+                    {classification()}
+                    <IonButton onClick={() => {
+                        console.log(bookKeepingList);
+                        console.log(storageContext.state.bookKeeping);
+                        console.log(storageContext.state.tempBookKeeping);
+                    }}>check</IonButton>
+                </div>
             </IonContent>
-        </IonPage >
+        </IonPage>
     );
 };
 

@@ -33,7 +33,7 @@ export function RecordStorage() {
     }, []);
 
     const createPurchaseList = async (content: { description: string, price: number }[], type: string, date: string) => {
-        if (type !== 'Income') {
+        if (type !== 'Income' && type !== 'Revoke') {
             content = content.map((item) => {
                 return {
                     ...item,
@@ -53,12 +53,26 @@ export function RecordStorage() {
         setList(updatedList);
         storageContext.dispatch({ type: 'setList', payload: updatedList });
         store?.set(RECORD_KEY, updatedList);
-        await createBKList(storageContext.state.tempBookKeeping, id);
+        if (storageContext.state.tempBookKeeping.length > 0) {
+            console.log("createBKList");
+            await createBKList(storageContext.state.tempBookKeeping, id);
+        }
     }
 
     const updateContent = async (id: string, content: { description: string, price: number }[], type: string, date: string) => {
         let newList = [...storageContext.state.list];
-
+        if (type !== 'Income' && type !== 'Revoke') {
+            content = content.map((item) => {
+                if (item.price > 0) {
+                    console.log(item.price);
+                    return {
+                        ...item,
+                        price: -item.price
+                    }
+                }
+                return { ...item }
+            })
+        }
         const updateContent = {
             id: id,
             date: date,
@@ -66,11 +80,15 @@ export function RecordStorage() {
             content: content,
             total: _.sumBy(content, (o) => o.price)
         }
+        console.log(storageContext.state.tempBookKeeping);
         const index = newList.findIndex((item) => item.id === id);
         newList[index] = updateContent;
         setList(newList);
         storageContext.dispatch({ type: 'setList', payload: newList });
         store?.set(RECORD_KEY, newList);
+        if (storageContext.state.tempBookKeeping.length > 0) {
+            await createBKList(storageContext.state.tempBookKeeping, id);
+        }
     }
 
     const deleteContent = async (id: number, index: number) => {

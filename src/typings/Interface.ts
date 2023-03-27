@@ -25,8 +25,21 @@ export interface SearchResult {
 }
 
 export interface BKeeping {
+  id: string,
   date: Date,
   name: string,
   price: number,
   recordId: string
+}
+
+export interface Notifi {
+  id: number,
+  type: string,
+  repeat: number,
+  message: string,
+  date: Date,
+}
+
+export interface Data {
+  [key: string]: BKeeping[]
 }

@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import { PurchaseList, ShoppingCart,BKeeping } from "../typings/Interface";
+import { PurchaseList, ShoppingCart,BKeeping, Notifi } from "../typings/Interface";
 
 export interface StorageInterface {
     totalAmount: number;
@@ -9,6 +9,7 @@ export interface StorageInterface {
     shoppingCart: ShoppingCart[];
     bookKeeping: BKeeping[];
     tempBookKeeping: BKeeping[];
+    notifications:Notifi[];
 }
 
 export type Action =
@@ -19,6 +20,7 @@ export type Action =
     | { type: 'setShoppingCart', payload: ShoppingCart[] }
     | { type: 'setBookKeeping', payload: BKeeping[] }
     | { type: 'setTempBookKeeping', payload: BKeeping[] }
+    | { type: 'setNotifications', payload: Notifi[] }
     | { type: 'init' }
 
 export const initialState = {
@@ -34,7 +36,8 @@ export const initialState = {
     list: [],
     shoppingCart: [],
     bookKeeping: [],
-    tempBookKeeping: []
+    tempBookKeeping: [],
+    notifications:[]
 }
 
 const StorageContext = createContext<{

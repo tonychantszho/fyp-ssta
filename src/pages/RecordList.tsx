@@ -1,4 +1,4 @@
-import { IonButton, IonButtons, IonCol, IonContent, IonDatetime, IonFooter, IonGrid, IonHeader, IonItem, IonItemOption, IonItemOptions, IonItemSliding, IonLabel, IonPage, IonRow, IonTitle, IonToolbar } from '@ionic/react';
+import { IonButton, IonButtons, IonCol, IonContent, IonDatetime, IonGrid, IonHeader, IonItem, IonItemOption, IonItemOptions, IonItemSliding, IonLabel, IonPage, IonRow, IonTitle, IonToolbar } from '@ionic/react';
 import { nanoid } from 'nanoid';
 import { useContext, useState } from 'react';
 import { RecordStorage } from '../hooks/RecordStorage';
@@ -40,7 +40,7 @@ const RecordList: React.FC = () => {
 
     const formatedList = (classedList: PurchaseList[], key: string) => {
         return (
-            <div className='w-full mt-4'>
+            <div className='w-full mt-4' key={nanoid()}>
                 <IonGrid className=' justify-center items-center text-center w-full uppercase font-bold'>
                     <IonRow>
                         <IonCol size="12">
@@ -53,7 +53,9 @@ const RecordList: React.FC = () => {
                         <IonItemSliding onClick={() => { setSelectedList(item.id) }}>
                             <IonItem lines="none" class='recordList'>
                                 <table className='w-full'>
-                                    {detailList(item, item.id)}
+                                    <tbody>
+                                        {detailList(item, item.id)}
+                                    </tbody>
                                 </table>
                             </IonItem>
                             <IonItemOptions side="start">

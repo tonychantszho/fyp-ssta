@@ -165,7 +165,7 @@ const SearchPrice: React.FC = () => {
             </IonRow>
             <IonRow>
               <IonCol size='8' offset='1'>
-                <IonInput value={ignoreWord} placeholder='key want to ommit' onIonChange={(e) => { setIgnoreWord(e.detail.value!) }}></IonInput>
+                <IonInput value={ignoreWord} placeholder='key want to omit' onIonChange={(e) => { setIgnoreWord(e.detail.value!) }}></IonInput>
               </IonCol>
               <IonCol size='3'>
                 {loading ?

@@ -1,21 +1,17 @@
-import { IonButtons, IonButton, IonContent, IonHeader, IonInput, IonList, IonPage, IonTitle, IonToolbar, IonItem, IonSelect, IonSelectOption, IonCol, IonRow, IonGrid, IonLabel, IonIcon, useIonAlert, IonDatetime, IonSpinner, isPlatform } from '@ionic/react';
+import { IonButtons, IonButton, IonContent, IonHeader, IonInput, IonList, IonPage, IonTitle, IonToolbar, IonItem, IonCol, IonRow, IonGrid, IonIcon, useIonAlert } from '@ionic/react';
 import { useContext, useRef, useState } from 'react';
-import { RecordStorage } from '../hooks/RecordStorage';
-// import { nanoid } from 'nanoid';
 import { closeCircle } from 'ionicons/icons';
 import _ from 'lodash';
 import StorageContext from '../contexts/StorageContext';
 import { BKeeping } from '../typings/Interface';
 import { useHistory } from 'react-router';
 import { AlertMsg } from '../components/AlertMsg';
-import { RouteComponentProps } from 'react-router-dom';
 
 
 const BookKeeping: React.FC = () => {
     const storageContext = useContext(StorageContext);
-    const { createPurchaseList, updateContent } = RecordStorage();
     const [counter, setCounter] = useState(1);
-    const [currentItem, setCurrentItem] = useState<BKeeping[]>([{ date: new Date, name: '', price: 0, recordId: "" }]);
+    const [currentItem, setCurrentItem] = useState<BKeeping[]>([{ id: '', date: new Date, name: '', price: 0, recordId: "" }]);
     const lines: React.ReactNode[] = [];
     const bottomRef = useRef<HTMLDivElement>(null);
     const [presentAlert] = useIonAlert();
@@ -73,7 +69,7 @@ const BookKeeping: React.FC = () => {
     }
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        if (_.sumBy(currentItem, 'price') > storageContext.state.tempNewRecordTotal) {
+        if (_.sumBy(currentItem, 'price') > Math.abs(storageContext.state.tempNewRecordTotal)) {
             AlertMsg(presentAlert, 'Error', 'Total price is greater than the total amount of the record', ['OK']);
             return;
         }
@@ -92,7 +88,7 @@ const BookKeeping: React.FC = () => {
         console.log(newItem);
         storageContext.dispatch({ type: 'setTempBookKeeping', payload: newItem });
         setCounter(1);
-        setCurrentItem([{ date: new Date, name: '', price: 0, recordId: "" }]);
+        setCurrentItem([{ id: '', date: new Date, name: '', price: 0, recordId: "" }]);
         AlertMsg(presentAlert, 'Success', 'Book Keeping recorded', ['OK']);
         history.push('/page/InsertRecord');
     };
@@ -137,7 +133,7 @@ const BookKeeping: React.FC = () => {
                                         <IonButton
                                             onClick={() => {
                                                 setCounter(counter + 1);
-                                                setCurrentItem(currentItem => [...currentItem, { date: new Date, name: '', price: 0, recordId: "" }]);
+                                                setCurrentItem(currentItem => [...currentItem, { id: '', date: new Date, name: '', price: 0, recordId: "" }]);
                                                 if (bottomRef.current) {
                                                     setTimeout(() => {
                                                         //console.log(bottomRef.current!.scrollTop.toString());

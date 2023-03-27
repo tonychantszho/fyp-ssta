@@ -2,7 +2,6 @@ import { AlertButton, useIonAlert } from "@ionic/react";
 
 export const AlertMsg = async (presentAlert: any, header: string, message: string, buttons: string[]) => {
 
-    // const [presentAlert] = useIonAlert();
     let result = "";
     let totalButton: AlertButton[] = [];
     for (let i = 0; i < buttons.length; i++) {

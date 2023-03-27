@@ -9,6 +9,8 @@ import RecordList from './pages/RecordList';
 import CrossCart from './pages/ShoppingCart';
 import Synchronization from './pages/Synchronization';
 import BookKeeping from './pages/BookKeeping';
+import AccountReceivable from './pages/AccountReceivable';
+import TestCam from './pages/TestCam';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -30,10 +32,36 @@ import '@ionic/react/css/display.css';
 import './theme/variables.css';
 import './theme/tailwind.css';
 import Footer from './components/Footer';
+import { useContext, useEffect } from 'react';
+import StorageContext from './contexts/StorageContext';
+import { RecordStorage } from './hooks/RecordStorage';
+import { BookKeepingStorage } from './hooks/BookKeepingStorage';
+import { ShoppingCartStorage } from './hooks/ShoppingCartStorage';
+import { NotificationStorage } from './hooks/NotificationStorage';
 
 setupIonicReact();
 
 const App: React.FC = () => {
+  const storageContext = useContext(StorageContext);
+  const { bookKeepingList } = BookKeepingStorage();
+  const { shoppingCartList } = ShoppingCartStorage();
+  const { notification } = NotificationStorage();
+  useEffect(() => {
+    if (bookKeepingList.length > 0) {
+      storageContext.dispatch({ type: 'setBookKeeping', payload: bookKeepingList });
+    }
+  }, [bookKeepingList]);
+  useEffect(() => {
+    if (shoppingCartList.length > 0) {
+      storageContext.dispatch({ type: 'setShoppingCart', payload: shoppingCartList });
+    }
+  }, [shoppingCartList]);
+  useEffect(() => {
+    if (notification.length > 0) {
+      storageContext.dispatch({ type: 'setNotifications', payload: notification });
+    }
+  }, [notification]);
+
   return (
     <IonApp>
       <IonReactRouter>
@@ -66,6 +94,12 @@ const App: React.FC = () => {
             </Route>
             <Route path="/page/BookKeeping" exact={true}>
               <BookKeeping />
+            </Route>
+            <Route path="/page/AccountReceivable" exact={true}>
+              <AccountReceivable />
+            </Route>
+            <Route path="/page/TestCam" exact={true}>
+              <TestCam />
             </Route>
           </IonRouterOutlet>
         </IonSplitPane>

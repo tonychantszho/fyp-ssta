@@ -30,6 +30,7 @@ export function stroageReducer(state: StorageInterface, action: Action) {
                 shoppingCart: action.payload,
             }
         case 'setBookKeeping':
+            console.log("setBookKeeping");
             return {
                 ...state,
                 bookKeeping: action.payload,
@@ -38,6 +39,11 @@ export function stroageReducer(state: StorageInterface, action: Action) {
             return {
                 ...state,
                 tempBookKeeping: action.payload,
+            }
+        case 'setNotifications':
+            return {
+                ...state,
+                notifications: action.payload,
             }
         case 'init':
             return initialState;

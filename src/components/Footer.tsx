@@ -96,12 +96,14 @@ const Footer: React.FC = () => {
                                 <IonItemSliding key={nanoid()}>
                                     <IonItem lines="none" class='recordList'>
                                         <table className='w-full'>
-                                            <tr>
-                                                <td className='text-center w-1/4'>{item.type}</td>
-                                                <td className='text-center w-1/2'>{item.content[0].description}</td>
-                                                <td className='text-center w-1/4'>${item.total}</td>
-                                                {/* <p key={nanoid()}>type:{item.type},description:{item.content[0].description},total:{item.total.toString()}</p> */}
-                                            </tr>
+                                            <tbody>
+                                                <tr>
+                                                    <td className='text-center w-1/4'>{item.type}</td>
+                                                    <td className='text-center w-1/2'>{item.content[0].description}</td>
+                                                    <td className='text-center w-1/4'>${item.total}</td>
+                                                    {/* <p key={nanoid()}>type:{item.type},description:{item.content[0].description},total:{item.total.toString()}</p> */}
+                                                </tr>
+                                            </tbody>
                                         </table>
                                     </IonItem>
                                     <IonItemOptions side="start">
@@ -170,7 +172,7 @@ const Footer: React.FC = () => {
                         className='bg-lime-400 h-20 w-20 z-10 rounded-full flex justify-center overflow-hidden flex-wrap absolute bottom-4 transition-all'>
                         <button id="recordBtn" className='h-20 w-20 bg-lime-400 hover:bg-lime-300 p-3 rounded-full absolute bottom-0 justify-center  flex-wrap z-30'
                             onClick={() => MainBtnClick()}
-                        >   
+                        >
                             <img className="h-8 m-auto" src={RecordIcon} alt="main" />
                             <IonText id="btnText">record</IonText>
                         </button>

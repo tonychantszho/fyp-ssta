@@ -13,7 +13,7 @@ const HomePage: React.FC = () => {
     useEffect(() => {
         const calculateTotal = (type: string) => {
             const result = storageContext.state.list.reduce((acc, cur) => {
-                if (type == "total" || new Date(cur.date).getMonth() === new Date().getMonth()) {
+                if (type === "total" || new Date(cur.date).getMonth() === new Date().getMonth()) {
                     return acc + cur.total;
                 }
                 return acc;
