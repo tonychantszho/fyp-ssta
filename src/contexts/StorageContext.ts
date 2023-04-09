@@ -1,21 +1,23 @@
 import { createContext } from "react";
-import { PurchaseList, ShoppingCart,BKeeping, Notifi } from "../typings/Interface";
+import { PurchaseList, ShoppingCart, BKeeping, Notifi } from "../typings/Interface";
 
 export interface StorageInterface {
     totalAmount: number;
     tempNewRecordTotal: number;
     selectedRecord: PurchaseList;
+    targetRecord: string;
     list: PurchaseList[];
     shoppingCart: ShoppingCart[];
     bookKeeping: BKeeping[];
     tempBookKeeping: BKeeping[];
-    notifications:Notifi[];
+    notifications: Notifi[];
 }
 
 export type Action =
     | { type: 'setTempTotal', payload: number }
     | { type: 'setList', payload: PurchaseList[] }
     | { type: 'setSelectedRecord', payload: PurchaseList }
+    | { type: 'setTargetRecord', payload: string }
     | { type: 'unSetSelectedRecord' }
     | { type: 'setShoppingCart', payload: ShoppingCart[] }
     | { type: 'setBookKeeping', payload: BKeeping[] }
@@ -33,11 +35,12 @@ export const initialState = {
         content: [],
         total: 0.7428221
     },
+    targetRecord: '',
     list: [],
     shoppingCart: [],
     bookKeeping: [],
     tempBookKeeping: [],
-    notifications:[]
+    notifications: []
 }
 
 const StorageContext = createContext<{

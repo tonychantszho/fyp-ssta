@@ -1,5 +1,5 @@
-import { IonPage } from '@ionic/react';
-import Background from "../image/bg.jpg";
+import { IonContent, IonPage } from '@ionic/react';
+// import Background from "../image/back2.jpg";
 import { useContext, useEffect, useState } from 'react';
 import StorageContext from '../contexts/StorageContext';
 import { StateChecker } from '../components/StateChecker';
@@ -54,21 +54,21 @@ const HomePage: React.FC = () => {
             }
         }
         return (
-            <div className={`${style} absolute font-digital bg-black/30 mt-4 px-3 pb-2 pt-1 tracking-wide rounded-xl text-3xl leading-none`} >
+            <div className={`${style} absolute z-40 font-digital bg-[#1c4550]/80 border-cyan-100 border-2 mt-4 px-3 pb-2 pt-1 tracking-wide rounded-xl text-3xl leading-none`} >
                 ${total}
             </div >
         );
     };
     return (
         <IonPage>
-            <div
-                className="relative h-[calc(100%_-_3rem)] bg-[length:100%_100%]"
-                style={{ backgroundImage: `url(${Background})` }}
-            >
+            <IonContent class="bg-[url('../image/back2.jpg')]">
                 {PropertyViewer("total")}
                 {PropertyViewer("cur")}
-                <img className="absolute h-[480px] mx-auto left-0 right-0 bottom-[5%] p-2" src={seed} alt="background" />
-            </div>
+                <div className="h-full bg-[length:100%_100%] bg-[url('../image/back2.jpg')] blur-[0.8px]" />
+                <img className="absolute h-[480px] mx-auto left-0 right-0 bottom-[5%] p-16" src={seed} alt="background" />
+
+            </IonContent>
+
         </IonPage>
     );
 };

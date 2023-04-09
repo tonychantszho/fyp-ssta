@@ -1,4 +1,4 @@
-import { IonButton, IonButtons, IonCol, IonContent, IonGrid, IonHeader, IonInput, IonItem, IonItemOption, IonItemOptions, IonItemSliding, IonLabel, IonPage, IonRow, IonSpinner, IonTitle, IonToolbar, useIonAlert } from '@ionic/react';
+import { IonButton, IonCol, IonContent, IonGrid, IonInput, IonItem, IonItemOption, IonItemOptions, IonItemSliding, IonLabel, IonList, IonPage, IonRow, IonSpinner, IonToggle, useIonAlert } from '@ionic/react';
 import axios from 'axios';
 import { nanoid } from 'nanoid';
 import { useState, useContext } from 'react';
@@ -7,6 +7,7 @@ import '../theme/variables.css';
 import { ShoppingCart, PurchaseItem } from '../typings/Interface';
 import { ShoppingCartStorage } from '../hooks/ShoppingCartStorage';
 import { RecordStorage } from '../hooks/RecordStorage';
+import Header from '../components/Header';
 
 const CrossCart: React.FC = () => {
     const storageContext = useContext(StorageContext);
@@ -75,6 +76,7 @@ const CrossCart: React.FC = () => {
                 newRecord.push(record);
             }
         }
+        console.log("checked = ", checked);
         if (checked.length === 0) {
             presentAlert({
                 header: 'unexpected error',
@@ -138,132 +140,133 @@ const CrossCart: React.FC = () => {
     }
 
     const printShoppingCart = () => {
-        console.log(shoppingCartList);
         return (
-            <div className='h-[calc(100%_-_19rem)] overflow-y-auto absolute'>
+            <>
                 {shoppingCartList.map((item, index) =>
-                    <IonItemSliding key={nanoid()} className='table-row'>
-                        <IonItem lines="none" className='m-0 p-0' class="ion-no-padding">
-                            <table className="border-collapse border border-slate-400 w-full ml-1 text-center table-fixed mt-2">
-                                <tbody>
-                                    <tr>
-                                        <td className="border border-slate-300 w-1/12">
-                                            <input type="checkbox" id={"product" + index} value={index} />
-                                        </td>
-                                        <td className="border border-slate-300 w-1/6">{item.shop}</td>
-                                        <td className="border border-slate-300 w-1/3">
-                                            <div className='h-15' id="cart">
-                                                <span className='overflow-hidden text-ellipsis'
-                                                    style={{
-                                                        display: '-webkit-box',
-                                                        WebkitLineClamp: 3,
-                                                        WebkitBoxOrient: 'vertical',
-                                                    }}>
-                                                    {item.product}</span>
-                                            </div>
-                                        </td>
-                                        <td className="border border-slate-300 w-1/5">${item.price}</td>
-                                        <td className="border border-slate-300 w-1/5">
-                                            <IonItem href={item.address} lines='none' detail={false} color='success'> go</IonItem>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                    <IonItemSliding key={nanoid()} className='ion-no-padding'>
+                        <IonItem lines="none" className='ion-no-padding'>
+                            <IonGrid className='ion-no-padding border-b-2 px-2'>
+                                <IonRow className='text-center'>
+                                    <IonCol size='2' className='flex items-center justify-center ion-no-padding'>
+                                        <IonToggle color="success" id={"product" + index} value={index.toString()}></IonToggle>
+                                    </IonCol>
+                                    <IonCol size='2' className='flex items-center justify-center text-sm ion-no-padding'>
+                                        {item.shop}
+                                    </IonCol>
+                                    <IonCol size='8' className=' items-center justify-center  text-left text-base p-3'>
+                                        <div className='overflow-hidden text-ellipsis'
+                                            style={{
+                                                display: '-webkit-box',
+                                                WebkitLineClamp: 4,
+                                                WebkitBoxOrient: 'vertical',
+                                            }}>
+                                            {item.product}
+                                        </div>
+                                        <IonGrid className='ion-no-padding'>
+                                            <IonRow>
+                                                <IonCol size='6' className='text-xl flex items-center'>
+                                                    <span className='font-bold text-[#1c4550]'>
+                                                        ${item.price}
+                                                    </span>
+                                                    &nbsp;x&nbsp;1
+                                                </IonCol>
+                                                {/* <IonCol size='3'>
+                                                    <IonButton className='fullRound h-12' expand='block'>
+                                                        <svg xmlns="http://www.w3.org/2000/svg" fill='#1c4550' width="30" height="30" viewBox="0 0 24 24"><path d="M20 2H10c-1.103 0-2 .897-2 2v4H4c-1.103 0-2 .897-2 2v10c0 1.103.897 2 2 2h10c1.103 0 2-.897 2-2v-4h4c1.103 0 2-.897 2-2V4c0-1.103-.897-2-2-2zM4 20V10h10l.002 10H4zm16-6h-4v-4c0-1.103-.897-2-2-2h-4V4h10v10z"></path></svg>
+                                                    </IonButton>
+                                                </IonCol> */}
+                                                {item.address === '' ? <div className='h-12' /> :
+                                                    <IonCol size='3' offset='3'>
+                                                        <IonButton className='fullRound h-12 ion-no-padding' expand='block' href={item.address} target="_blank">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" fill='#1c4550' width="30" height="30" viewBox="0 0 24 24"><path d="M4.222 19.778a4.983 4.983 0 0 0 3.535 1.462 4.986 4.986 0 0 0 3.536-1.462l2.828-2.829-1.414-1.414-2.828 2.829a3.007 3.007 0 0 1-4.243 0 3.005 3.005 0 0 1 0-4.243l2.829-2.828-1.414-1.414-2.829 2.828a5.006 5.006 0 0 0 0 7.071zm15.556-8.485a5.008 5.008 0 0 0 0-7.071 5.006 5.006 0 0 0-7.071 0L9.879 7.051l1.414 1.414 2.828-2.829a3.007 3.007 0 0 1 4.243 0 3.005 3.005 0 0 1 0 4.243l-2.829 2.828 1.414 1.414 2.829-2.828z"></path><path d="m8.464 16.95-1.415-1.414 8.487-8.486 1.414 1.415z"></path></svg>                                                    </IonButton>
+                                                    </IonCol>
+                                                }
+                                            </IonRow>
+                                        </IonGrid>
+                                    </IonCol>
+                                </IonRow>
+                            </IonGrid>
                         </IonItem>
                         <IonItemOptions side="end">
                             <IonItemOption color='danger'
                                 onClick={() => deleteRecord(index)}
                             >Delete</IonItemOption>
                         </IonItemOptions>
-                    </IonItemSliding>
-                )}
-            </div>
+                    </IonItemSliding >
+                )
+                }
+            </>
         )
     }
 
-    const controltBtn = loading ?
-        <div className=' w-full h-full flex items-center m-auto'>
-            <IonSpinner name="circular" className=' w-2/5 h-2/5 flex items-center' />
-        </div>
-        :
-        <div className=' w-full h-full'>
-            <div className='h-1/2'>
-                <IonButton className='p-0' onClick={handleGetResult}>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" style={{ fill: "rgba(0, 0, 0, 1)" }}><circle cx="10.5" cy="19.5" r="1.5"></circle><circle cx="17.5" cy="19.5" r="1.5"></circle><path d="M13 13h2v-2.99h2.99v-2H15V5.03h-2v2.98h-2.99v2H13V13z"></path><path d="M10 17h8a1 1 0 0 0 .93-.64L21.76 9h-2.14l-2.31 6h-6.64L6.18 4.23A2 2 0 0 0 4.33 3H2v2h2.33l4.75 11.38A1 1 0 0 0 10 17z"></path></svg>
-                </IonButton>
-            </div >
-            <div className='h-1/2'>
-                <IonButton className='p-0' onClick={() => { setEdit(true) }} color="primary">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path d="M8.707 19.707 18 10.414 13.586 6l-9.293 9.293a1.003 1.003 0 0 0-.263.464L3 21l5.242-1.03c.176-.044.337-.135.465-.263zM21 7.414a2 2 0 0 0 0-2.828L19.414 3a2 2 0 0 0-2.828 0L15 4.586 19.414 9 21 7.414z"></path></svg>                </IonButton>
-            </div >
-        </div >
-
-
-
     return (
         <IonPage>
-            <IonHeader >
-                <IonToolbar>
-                    <IonButtons slot="start" className='bg-lime-300 m-0 p-0 absolute'>
-                        <IonItem routerLink='../page/HomePage' routerDirection="back" lines="none" detail={false} color="transparent">
-                            <IonButton onClick={() => { storageContext.dispatch({ type: 'unSetSelectedRecord' }); }}>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path d="M12.74 2.32a1 1 0 0 0-1.48 0l-9 10A1 1 0 0 0 3 14h2v7a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-7h2a1 1 0 0 0 1-1 1 1 0 0 0-.26-.68z"></path></svg>
-                            </IonButton>
-                        </IonItem>
-                    </IonButtons>
-                    <IonTitle className='bg-lime-300 absolute my-auto top-0 bottom-0 left-0 right-0 text-center'>Shopping List</IonTitle>
-                </IonToolbar>
-            </IonHeader>
+            <Header title='Shopping Cart' />
             <IonContent fullscreen>
                 {edit ?
                     inputForm()
                     :
                     <>
-                        <IonGrid fixed={true} className="h-28">
-                            <IonRow>
+                        <IonGrid fixed={true}>
+                            <IonRow >
                                 <IonCol size='9'>
-                                    <div className='h-full flex items-center'>
-                                        <IonItem className='w-full'>
-                                            <IonLabel position="stacked">Product URL</IonLabel>
-                                            <IonInput className='text-xs' placeholder="Enter text" value={input} onIonChange={e => setInput(e.detail.value!)} />
-                                        </IonItem>
-                                    </div>
+                                    <IonItem>
+                                        <IonLabel position="stacked">Product URL</IonLabel>
+                                        <IonInput className='text-xs' placeholder="Enter text" value={input} onIonChange={e => setInput(e.detail.value!)} />
+                                    </IonItem>
                                 </IonCol>
-                                <IonCol size='3'>
-                                    {controltBtn}
+                                <IonCol size='2'>
+                                    {loading ?
+                                        <div className=' w-full h-full flex items-center m-auto'>
+                                            <IonSpinner name="circular" className=' w-2/5 h-2/5 flex items-center' />
+                                        </div>
+                                        :
+                                        <div>
+                                            <IonButton className='ion-no-padding' expand='block' onClick={handleGetResult}>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" style={{ fill: "rgba(0, 0, 0, 1)" }}><circle cx="10.5" cy="19.5" r="1.5"></circle><circle cx="17.5" cy="19.5" r="1.5"></circle><path d="M13 13h2v-2.99h2.99v-2H15V5.03h-2v2.98h-2.99v2H13V13z"></path><path d="M10 17h8a1 1 0 0 0 .93-.64L21.76 9h-2.14l-2.31 6h-6.64L6.18 4.23A2 2 0 0 0 4.33 3H2v2h2.33l4.75 11.38A1 1 0 0 0 10 17z"></path></svg>
+                                            </IonButton>
+                                            <IonButton className='ion-no-padding' expand='block' onClick={() => { setEdit(true) }}>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path d="M8.707 19.707 18 10.414 13.586 6l-9.293 9.293a1.003 1.003 0 0 0-.263.464L3 21l5.242-1.03c.176-.044.337-.135.465-.263zM21 7.414a2 2 0 0 0 0-2.828L19.414 3a2 2 0 0 0-2.828 0L15 4.586 19.414 9 21 7.414z"></path></svg>
+                                            </IonButton>
+                                        </div >}
                                 </IonCol>
                             </IonRow>
                         </IonGrid>
-                        <IonItem lines="none" className='m-0' class="ion-no-padding">
-                            <table className="w-full ml-1 text-center table-fixed mt-2">
-                                <thead>
-                                    <tr>
-                                        <th className="w-1/12">No.</th>
-                                        <th className="w-1/6">Shop</th>
-                                        <th className="w-1/3">Product</th>
-                                        <th className="w-1/5">Price</th>
-                                        <th className="w-1/5">Address</th>
-                                    </tr>
-                                </thead>
-                            </table>
-                        </IonItem>
-                        {printShoppingCart()}
-                        <div className=' fixed bottom-12 w-full z-50 block overflow-hidden'>
-                            <IonGrid fixed={true}>
-                                <IonRow>
-                                    <IonCol size='2'>
-                                        <IonButton type="submit" color='secondary' onClick={() => { addNewRecord(true) }}>
-                                            Check select
-                                        </IonButton>
-                                    </IonCol>
-                                    <IonCol offset='6' size='2'>
-                                        <IonButton type="submit" onClick={() => { addNewRecord(false) }}>
-                                            Check All
-                                        </IonButton>
-                                    </IonCol>
-                                </IonRow>
-                            </IonGrid>
-                        </div>
+                        <IonGrid className='ion-no-padding px-3'>
+                            <IonRow className='justify-center items-center text-center w-full px-2 rounded-t-2xl h-8 uppercase bg-[#1c4550] text-[#60d28b] font-semibold'>
+                                <IonCol size="2">buy</IonCol>
+                                <IonCol size="2">shop</IonCol>
+                                <IonCol size="8">Information</IonCol>
+                            </IonRow>
+                        </IonGrid>
+                        <IonGrid className="max-h-[calc(100%_-_16rem)] overflow-y-auto bg-white rounded-b-2xl mx-3 ion-no-padding drop-shadow-md">
+                            {printShoppingCart()}
+                        </IonGrid>
+                        <IonGrid fixed={true} className=' fixed bottom-10 w-full z-50 block overflow-hidden'>
+                            <IonRow>
+                                <IonCol size='2' offset='1' className='flex items-center'>
+                                    <IonToggle color="success" onIonChange={(e) => {
+                                        for (let i = 0; i < shoppingCartList.length; i++) {
+                                            const name = "#product" + i.toString();
+                                            const target = document.querySelector<HTMLInputElement>(name);
+                                            if (target) {
+                                                if (!e.target.checked) {
+                                                    target.checked = false;
+                                                } else {
+                                                    target.checked = true;
+                                                }
+                                            }
+                                        }
+                                    }}></IonToggle>
+
+                                </IonCol>
+                                <IonCol offset='5' size='2'>
+                                    <IonButton type="submit" className='submitButton' onClick={() => { addNewRecord(true) }}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="#fff"><path d="m10 15.586-3.293-3.293-1.414 1.414L10 18.414l9.707-9.707-1.414-1.414z"></path></svg>
+                                    </IonButton>
+                                </IonCol>
+                            </IonRow>
+                        </IonGrid>
                     </>
                 }
             </IonContent>

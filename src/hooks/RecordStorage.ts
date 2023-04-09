@@ -49,7 +49,7 @@ export function RecordStorage() {
             content: content,
             total: _.sumBy(content, (o) => o.price)
         }
-        const updatedList = [...list, newList];
+        const updatedList = [...storageContext.state.list, newList];
         setList(updatedList);
         storageContext.dispatch({ type: 'setList', payload: updatedList });
         store?.set(RECORD_KEY, updatedList);

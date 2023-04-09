@@ -16,11 +16,11 @@ const PieeChart: React.FC<Props> = ({ month }) => {
     let pieData: pieFormat[] = [];
     type PieColor = { [propKey: string]: string };
     const pieColor: PieColor = {};
-    pieColor.Shopping = '#5bb5b2';
-    pieColor.Income = '#C13C37';
+    pieColor.Shopping = '#D03030';
+    pieColor.Income = '#4fd067';
     pieColor.Diet = '#6A2135';
-    pieColor.Loan = '#D03030';
-    pieColor.Revoke = '#5B0005';
+    pieColor.Loan = '#5bb5b2';
+    pieColor.Revoke = '#d0a630';
     const monthNames = ["January", "February", "March", "April", "May", "June",
         "July", "August", "September", "October", "November", "December"
     ];
@@ -62,10 +62,10 @@ const PieeChart: React.FC<Props> = ({ month }) => {
                 data={pieData}
                 lineWidth={40}
                 paddingAngle={15}
-                startAngle={40}
+                startAngle={0}
                 segmentsStyle={{ transition: 'stroke .3s', cursor: 'pointer' }}
-                center={[90, 0]}
-                viewBoxSize={[180, 90]}
+                center={[100, 0]}
+                viewBoxSize={[200, 90]}
                 onClick={(_, index) => {
                     console.log(index);
                 }}
@@ -85,11 +85,11 @@ const PieeChart: React.FC<Props> = ({ month }) => {
                             fill: '#000',
                             opacity: 0.75,
                             fontWeight: 'bold',
-                            fontSize: '7px',
+                            fontSize: '8px',
                             pointerEvents: 'none',
                         }}>
                         <tspan x={x} y={y - 7} dx={dx} dy={dy} style={{ fill: pieColor[dataEntry.title] }}>{dataEntry.title}</tspan>
-                        <tspan className=' text-xs' x={x} y={y + 5} dx={dx} dy={dy}>${dataEntry.value}</tspan>
+                        <tspan className='text-xs' x={x} y={y + 5} dx={dx} dy={dy}>${dataEntry.value}</tspan>
                     </text>
                 )}
                 labelPosition={135}

@@ -52,14 +52,8 @@ const appPages: AppPage[] = [
   //   mdIcon: archiveSharp
   // },
   {
-    title: 'Test Page',
-    url: '/page/TestCam',
-    iosIcon: syncOutline,
-    mdIcon: syncOutline
-  },
-  {
-    title: 'Synchronization',
-    url: '/page/Synchronization',
+    title: 'Data Transfer',
+    url: '/page/DataTransfer',
     iosIcon: syncOutline,
     mdIcon: syncOutline
   }
@@ -74,12 +68,12 @@ const Menu: React.FC = () => {
 
   return (
     <IonMenu contentId="main" type="overlay">
-      <IonContent color="secondary" className=' absolute z-50'>
+      <IonContent className='sideMenu absolute z-50'>
         {/* <IonList id="inbox-list"> */}
         {appPages.map((appPage, index) => {
           return (
             <IonMenuToggle key={index} autoHide={false}>
-              <IonItem className={location.pathname === appPage.url ? 'selected' : ''} routerLink={appPage.url} routerDirection="forward" lines="none" detail={false} color="transparent" onClick={handleClick}>
+              <IonItem className={location.pathname === appPage.url ? 'selectedPage' : 'menuPage'} routerLink={appPage.url} routerDirection="forward" lines="none" detail={false} color="transparent" onClick={handleClick}>
                 <IonIcon slot="start" ios={appPage.iosIcon} md={appPage.mdIcon} />
                 <IonLabel>{appPage.title}</IonLabel>
               </IonItem>

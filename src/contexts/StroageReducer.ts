@@ -19,6 +19,11 @@ export function stroageReducer(state: StorageInterface, action: Action) {
                 ...state,
                 selectedRecord: action.payload
             }
+        case 'setTargetRecord':
+            return {
+                ...state,
+                targetRecord: action.payload
+            }
         case 'unSetSelectedRecord':
             return {
                 ...state,

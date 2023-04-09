@@ -7,10 +7,9 @@ import InsertRecord from './pages/InsertRecord';
 import SearchPrice from './pages/SearchPrice';
 import RecordList from './pages/RecordList';
 import CrossCart from './pages/ShoppingCart';
-import Synchronization from './pages/Synchronization';
+import DataTransfer from './pages/DataTransfer';
 import BookKeeping from './pages/BookKeeping';
 import AccountReceivable from './pages/AccountReceivable';
-import TestCam from './pages/TestCam';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -89,17 +88,14 @@ const App: React.FC = () => {
             <Route path="/page/ShoppingCart" exact={true}>
               <CrossCart />
             </Route>
-            <Route path="/page/Synchronization" exact={true}>
-              <Synchronization />
+            <Route path="/page/DataTransfer" exact={true}>
+              <DataTransfer />
             </Route>
             <Route path="/page/BookKeeping" exact={true}>
               <BookKeeping />
             </Route>
             <Route path="/page/AccountReceivable" exact={true}>
               <AccountReceivable />
-            </Route>
-            <Route path="/page/TestCam" exact={true}>
-              <TestCam />
             </Route>
           </IonRouterOutlet>
         </IonSplitPane>
@@ -110,3 +106,4 @@ const App: React.FC = () => {
 };
 
 export default App;
+
